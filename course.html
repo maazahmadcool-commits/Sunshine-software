@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Courses - ClientBook | Sunshines Software</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .card { transition: all 0.4s ease; }
+    .card:hover { transform: translateY(-12px); box-shadow: 0 25px 30px -10px rgb(0 0 0 / 0.15); }
+    .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9000; align-items:center; justify-content:center; }
+    .modal-bg.show { display:flex; }
+    .ifield { width:100%; padding:12px 16px; border:1px solid #e5e7eb; border-radius:12px; font-size:14px; outline:none; transition:border .2s; font-family:inherit; }
+    .ifield:focus { border-color:#2563eb; }
+    #toast { position:fixed; bottom:24px; right:24px; padding:14px 22px; border-radius:14px; color:white; font-size:13px; font-weight:600; display:flex; align-items:center; gap:10px; z-index:9999; transform:translateY(100px); opacity:0; transition:all .3s; pointer-events:none; background:#22c55e; }
+    #toast.show { transform:translateY(0); opacity:1; }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+<!-- MODAL -->
+<div id="courseModal" class="modal-bg">
+  <div class="bg-white rounded-3xl w-full max-w-lg mx-4 p-8 max-h-[90vh] overflow-y-auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div>
+        <h2 class="text-2xl font-bold" id="modalCourseName">Enroll</h2>
+        <p class="text-gray-500 text-sm" id="modalCoursePrice"></p>
+      </div>
+      <button onclick="closeCourseModal()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#9ca3af;">✕</button>
+    </div>
+    <div id="enrollmentForm">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <input id="cName" class="ifield" placeholder="Full Name *" />
+        <input id="cEmail" class="ifield" type="email" placeholder="Email Address *" />
+        <input id="cPhone" class="ifield" placeholder="Phone Number *" />
+        <textarea id="cMsg" class="ifield" rows="3" placeholder="Why do you want to join? Any requirements?"></textarea>
+        <input id="cDate" class="ifield" type="date" />
+        <button onclick="submitBookingRequest()" class="w-full bg-blue-600 text-white py-3.5 rounded-2xl font-semibold hover:bg-blue-700">Submit Booking Request</button>
+      </div>
+    </div>
+    <div id="paymentRequired" style="display:none;">
+      <div style="display:flex;flex-direction:column;gap:12px;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:8px;">💳</div>
+        <h3 class="text-lg font-semibold">Payment Required</h3>
+        <p class="text-gray-600 text-sm">Your booking request has been submitted. To confirm your enrollment, please complete the payment.</p>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div class="text-2xl font-bold text-blue-600">₹<span id="paymentAmount">0</span></div>
+          <div class="text-sm text-blue-600">Course Fee</div>
+        </div>
+        <button onclick="showPaymentForm()" class="w-full bg-green-600 text-white py-3.5 rounded-2xl font-semibold hover:bg-green-700">Pay Now</button>
+        <button onclick="closeCourseModal()" class="w-full border border-gray-300 text-gray-600 py-3.5 rounded-2xl font-medium hover:bg-gray-50">Pay Later</button>
+      </div>
+    </div>
+    <div id="paymentForm" style="display:none;">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <h3 class="text-lg font-semibold">Payment Details</h3>
+        <div id="card-element" class="ifield"></div>
+        <div id="card-errors" class="text-red-500 text-sm"></div>
+        <div class="flex gap-4">
+          <button onclick="backToEnrollment()" class="flex-1 py-3.5 border rounded-2xl font-medium hover:bg-gray-50">Back</button>
+          <button onclick="processPayment()" id="payButton" class="flex-1 bg-green-600 text-white py-3.5 rounded-2xl font-semibold hover:bg-green-700">Pay ₹<span id="payAmount">0</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"><i class="fas fa-check-circle"></i><span id="toastTxt"></span></div>
+
+<!-- Navbar -->
+<nav class="bg-white shadow fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-2xl">CB</div>
+      <span class="text-2xl font-bold text-blue-700">ClientBook</span>
+    </div>
+    <div class="flex items-center gap-6 text-sm font-medium">
+      <a href="index.html" class="hover:text-blue-600">Home</a>
+      <a href="services.html" class="hover:text-blue-600">Services</a>
+      <span class="text-blue-600 font-semibold">Courses</span>
+      <a href="client-dashboard.html" class="hover:text-blue-600">Dashboard</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white pt-28 pb-16 text-center">
+  <div class="max-w-7xl mx-auto px-6">
+    <h1 class="text-4xl md:text-5xl font-bold mb-4">Our Professional Courses</h1>
+    <p class="text-xl max-w-2xl mx-auto">Industry-ready courses with practical projects and placement support</p>
+  </div>
+</section>
+
+<!-- Courses Grid -->
+<section class="py-16">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <div class="card bg-white rounded-3xl shadow p-8">
+        <div class="text-5xl mb-6">🌐</div>
+        <h3 class="text-2xl font-bold mb-2">Full Stack Web Development</h3>
+        <p class="text-gray-600 text-sm mb-4">MERN Stack • 3 Months • Live Projects</p>
+        <p class="text-3xl font-bold text-blue-600 mb-6">₹14,999</p>
+        <button onclick="openCourseModal('Full Stack Web Development',14999)" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-semibold hover:bg-blue-700">Enroll Now</button>
+      </div>
+      <div class="card bg-white rounded-3xl shadow p-8">
+        <div class="text-5xl mb-6">📱</div>
+        <h3 class="text-2xl font-bold mb-2">Mobile App Development</h3>
+        <p class="text-gray-600 text-sm mb-4">Flutter / React Native • 3 Months</p>
+        <p class="text-3xl font-bold text-blue-600 mb-6">₹24,999</p>
+        <button onclick="openCourseModal('Mobile App Development',24999)" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-semibold hover:bg-blue-700">Enroll Now</button>
+      </div>
+      <div class="card bg-white rounded-3xl shadow p-8">
+        <div class="text-5xl mb-6">📊</div>
+        <h3 class="text-2xl font-bold mb-2">Digital Marketing Mastery</h3>
+        <p class="text-gray-600 text-sm mb-4">SEO + Google Ads + Social Media</p>
+        <p class="text-3xl font-bold text-blue-600 mb-6">₹9,999</p>
+        <button onclick="openCourseModal('Digital Marketing Mastery',9999)" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-semibold hover:bg-blue-700">Enroll Now</button>
+      </div>
+      <div class="card bg-white rounded-3xl shadow p-8">
+        <div class="text-5xl mb-6">🐍</div>
+        <h3 class="text-2xl font-bold mb-2">Python for Data Science & AI</h3>
+        <p class="text-gray-600 text-sm mb-4">Pandas, ML, Deep Learning</p>
+        <p class="text-3xl font-bold text-blue-600 mb-6">₹16,999</p>
+        <button onclick="openCourseModal('Python for Data Science & AI',16999)" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-semibold hover:bg-blue-700">Enroll Now</button>
+      </div>
+      <div class="card bg-white rounded-3xl shadow p-8">
+        <div class="text-5xl mb-6">☁️</div>
+        <h3 class="text-2xl font-bold mb-2">AWS Cloud Computing</h3>
+        <p class="text-gray-600 text-sm mb-4">Cloud Practitioner + Solutions Architect</p>
+        <p class="text-3xl font-bold text-blue-600 mb-6">₹18,999</p>
+        <button onclick="openCourseModal('AWS Cloud Computing',18999)" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-semibold hover:bg-blue-700">Enroll Now</button>
+      </div>
+      <div class="card bg-white rounded-3xl shadow p-8">
+        <div class="text-5xl mb-6">🔒</div>
+        <h3 class="text-2xl font-bold mb-2">Cyber Security Fundamentals</h3>
+        <p class="text-gray-600 text-sm mb-4">Ethical Hacking • Network Security</p>
+        <p class="text-3xl font-bold text-blue-600 mb-6">₹13,999</p>
+        <button onclick="openCourseModal('Cyber Security Fundamentals',13999)" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-semibold hover:bg-blue-700">Enroll Now</button>
+      </div>
+      <div class="card bg-white rounded-3xl shadow p-8">
+        <div class="text-5xl mb-6">📈</div>
+        <h3 class="text-2xl font-bold mb-2">Data Analytics with Power BI</h3>
+        <p class="text-gray-600 text-sm mb-4">Excel + SQL + Power BI</p>
+        <p class="text-3xl font-bold text-blue-600 mb-6">₹11,999</p>
+        <button onclick="openCourseModal('Data Analytics with Power BI',11999)" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-semibold hover:bg-blue-700">Enroll Now</button>
+      </div>
+      <div class="card bg-white rounded-3xl shadow p-8">
+        <div class="text-5xl mb-6">🎨</div>
+        <h3 class="text-2xl font-bold mb-2">UI/UX Design with Figma</h3>
+        <p class="text-gray-600 text-sm mb-4">Complete UI/UX Design Course</p>
+        <p class="text-3xl font-bold text-blue-600 mb-6">₹12,499</p>
+        <button onclick="openCourseModal('UI/UX Design with Figma',12499)" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-semibold hover:bg-blue-700">Enroll Now</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="bg-gray-900 text-white py-10 text-center">
+  <p class="text-sm">© 2026 Sunshines Software • Internship Project by Zakir Ahmad</p>
+</footer>
+
+<script>
+// Initialize Stripe (Replace with your publishable key)
+const stripe = Stripe('pk_test_your_publishable_key_here');
+const elements = stripe.elements();
+let cardElement;
+let _cName='', _cPrice=0;
+
+window.onload = function(){
+  // Create card element
+  const style = {
+    base: {
+      fontSize: '16px',
+      color: '#32325d',
+      fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
+      '::placeholder': {
+        color: '#aab7c4',
+      },
+    },
+  };
+  cardElement = elements.create('card', {style: style});
+  cardElement.mount('#card-element');
+
+  // Handle card errors
+  cardElement.addEventListener('change', function(event) {
+    const displayError = document.getElementById('card-errors');
+    if (event.error) {
+      displayError.textContent = event.error.message;
+    } else {
+      displayError.textContent = '';
+    }
+  });
+
+  const cu = JSON.parse(localStorage.getItem('currentUser')||'null');
+  if(cu){
+    document.getElementById('cName').value = cu.name||'';
+    document.getElementById('cEmail').value = cu.email||'';
+  }
+};
+
+function openCourseModal(name, price){
+  const cu = JSON.parse(localStorage.getItem('currentUser')||'null');
+  if(!cu){ alert('Pehle login karo!'); window.location.href='index.html'; return; }
+  _cName=name; _cPrice=price;
+  document.getElementById('modalCourseName').textContent = name;
+  document.getElementById('modalCoursePrice').textContent = 'Fee: ₹'+price.toLocaleString('en-IN');
+  document.getElementById('payAmount').textContent = price.toLocaleString('en-IN');
+  document.getElementById('cName').value = cu.name||'';
+  document.getElementById('cEmail').value = cu.email||'';
+  document.getElementById('enrollmentForm').style.display = 'block';
+  document.getElementById('paymentForm').style.display = 'none';
+  document.getElementById('courseModal').classList.add('show');
+}
+
+function submitBookingRequest(){
+  const name  = document.getElementById('cName').value.trim();
+  const email = document.getElementById('cEmail').value.trim();
+  const phone = document.getElementById('cPhone').value.trim();
+  if(!name||!email||!phone){ alert('Name, Email aur Phone zaroori hai!'); return; }
+
+  // Save booking request with pending payment status
+  const bookings = JSON.parse(localStorage.getItem('bookings')||'[]');
+  const bookingId = Date.now(); // Use timestamp as booking ID
+  bookings.push({
+    id: bookingId,
+    type:'Course', service:_cName,
+    name, email, phone, description:document.getElementById('cMsg').value.trim(),
+    date: document.getElementById('cDate').value ? new Date(document.getElementById('cDate').value).toLocaleDateString('en-IN') : new Date().toLocaleDateString('en-IN'),
+    price:_cPrice, status:'pending_payment',
+    createdAt:new Date().toISOString()
+  });
+  localStorage.setItem('bookings',JSON.stringify(bookings));
+
+  // Show payment required screen
+  document.getElementById('enrollmentForm').style.display = 'none';
+  document.getElementById('paymentRequired').style.display = 'block';
+  document.getElementById('paymentAmount').textContent = _cPrice.toLocaleString('en-IN');
+}
+
+function showPaymentForm(){
+  document.getElementById('enrollmentForm').style.display = 'none';
+  document.getElementById('paymentRequired').style.display = 'none';
+  document.getElementById('paymentForm').style.display = 'block';
+}
+
+function backToEnrollment(){
+  document.getElementById('enrollmentForm').style.display = 'block';
+  document.getElementById('paymentRequired').style.display = 'none';
+  document.getElementById('paymentForm').style.display = 'none';
+}
+
+async function processPayment(){
+  const payButton = document.getElementById('payButton');
+  payButton.disabled = true;
+  payButton.textContent = 'Processing...';
+
+  try {
+    // In a real implementation, you would create a PaymentIntent on your server
+    // For demo purposes, we'll simulate the payment
+    const {paymentMethod, error} = await stripe.createPaymentMethod({
+      type: 'card',
+      card: cardElement,
+      billing_details: {
+        name: document.getElementById('cName').value,
+        email: document.getElementById('cEmail').value,
+        phone: document.getElementById('cPhone').value,
+      },
+    });
+
+    if (error) {
+      document.getElementById('card-errors').textContent = error.message;
+      payButton.disabled = false;
+      payButton.innerHTML = 'Pay ₹<span id="payAmount">' + _cPrice.toLocaleString('en-IN') + '</span>';
+      return;
+    }
+
+    // Simulate payment confirmation
+    // In production, send paymentMethod.id to your server to confirm payment
+    alert('Payment successful! (Demo mode)');
+
+    // Update the booking status to paid
+    completeBookingAfterPayment();
+
+  } catch (error) {
+    document.getElementById('card-errors').textContent = 'Payment failed. Please try again.';
+    payButton.disabled = false;
+    payButton.innerHTML = 'Pay ₹<span id="payAmount">' + _cPrice.toLocaleString('en-IN') + '</span>';
+  }
+}
+
+function completeBookingAfterPayment(){
+  const bookings = JSON.parse(localStorage.getItem('bookings')||'[]');
+  // Find the most recent pending_payment booking for this user and course
+  const cu = JSON.parse(localStorage.getItem('currentUser')||'null');
+  for(let i = bookings.length - 1; i >= 0; i--){
+    const booking = bookings[i];
+    if(booking.status === 'pending_payment' &&
+       booking.email === cu.email &&
+       booking.service === _cName){
+      booking.status = 'paid';
+      booking.paymentMethod = 'Stripe';
+      booking.paidAt = new Date().toISOString();
+      break;
+    }
+  }
+  localStorage.setItem('bookings',JSON.stringify(bookings));
+
+  closeCourseModal();
+  const t=document.getElementById('toast');
+  document.getElementById('toastTxt').textContent='Payment successful! Course enrollment confirmed. Redirecting to dashboard...';
+  t.classList.add('show');
+  setTimeout(()=>window.location.href='client-dashboard.html',1500);
+}
+
+function closeCourseModal(){
+  document.getElementById('courseModal').classList.remove('show');
+  // Reset forms
+  document.getElementById('enrollmentForm').style.display = 'block';
+  document.getElementById('paymentRequired').style.display = 'none';
+  document.getElementById('paymentForm').style.display = 'none';
+  document.getElementById('cName').value = '';
+  document.getElementById('cEmail').value = '';
+  document.getElementById('cPhone').value = '';
+  document.getElementById('cMsg').value = '';
+  document.getElementById('cDate').value = '';
+  document.getElementById('card-errors').textContent = '';
+  cardElement.clear();
+}
+
+document.getElementById('courseModal').addEventListener('click',e=>{
+  if(e.target===document.getElementById('courseModal')) closeCourseModal();
+});
+</script>
+</body>
+</html>

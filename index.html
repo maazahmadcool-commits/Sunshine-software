@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home - ClientBook | Sunshines Software</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+    body { font-family: 'DM Sans', sans-serif; background: #0a0a0f; color: #e8e8f0; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900; background: linear-gradient(135deg, #c9a84c, #e8c97a); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .card { transition: all 0.4s ease; }
+    .card:hover { transform: translateY(-12px); box-shadow: 0 25px 40px -10px rgba(201, 168, 76, 0.25); }
+    .hero-bg { background: linear-gradient(135deg, #1e3a8a, #3b82f6); }
+    select option { background: #1a1a24; color: #e8e8f0; }
+
+    /* WHATSAPP FLOATING BUTTON */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #25D366;
+      color: #fff;
+      border-radius: 50px;
+      padding: 12px 20px 12px 14px;
+      box-shadow: 0 6px 24px rgba(37,211,102,0.45);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      animation: wpPulse 2.5s infinite;
+    }
+    .whatsapp-float:hover {
+      background: #1ebe5d;
+      transform: scale(1.05);
+      box-shadow: 0 8px 32px rgba(37,211,102,0.6);
+    }
+    .whatsapp-float i { font-size: 22px; }
+    .whatsapp-float .wp-text { display: flex; flex-direction: column; line-height: 1.3; }
+    .whatsapp-float .wp-text span:first-child { font-size: 12px; opacity: .85; font-weight: 400; }
+    .whatsapp-float .wp-text strong { font-size: 14px; }
+    @keyframes wpPulse {
+      0%, 100% { box-shadow: 0 6px 24px rgba(37,211,102,0.45); }
+      50% { box-shadow: 0 6px 32px rgba(37,211,102,0.75); }
+    }
+    @media (max-width: 640px) {
+      .whatsapp-float { padding: 12px; border-radius: 50%; }
+      .whatsapp-float .wp-text { display: none; }
+    }
+  </style>
+</head>
+<body class="bg-[#0a0a0f]">
+
+  <!-- WHATSAPP FLOATING BUTTON -->
+  <a href="https://wa.me/919928016573?text=Hello%20Sunshines%20Software!%20I%20am%20interested%20in%20your%20courses.%20Please%20share%20more%20details."
+     target="_blank" class="whatsapp-float" title="Chat on WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+    <div class="wp-text">
+      <span>Chat with us</span>
+      <strong>+91 99280 16573</strong>
+    </div>
+  </a>
+
+  <!-- Navbar -->
+  <nav class="bg-white/10 backdrop-blur-lg shadow fixed w-full top-0 z-50 border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-2xl">CB</div>
+        <span class="nav-logo">ClientBook</span>
+      </div>
+
+      <div class="hidden md:flex items-center flex-1 max-w-md mx-8">
+        <form action="https://www.google.com/search" method="get" target="_blank" class="w-full flex">
+          <div class="relative w-full">
+            <input type="text" name="q" placeholder="Search on Google..."
+                   class="w-full pl-10 pr-4 py-2.5 bg-white/10 border border-white/20 rounded-full focus:outline-none focus:border-[#c9a84c] text-sm text-white placeholder-gray-400">
+            <i class="fas fa-search absolute left-4 top-3 text-gray-400 text-sm"></i>
+          </div>
+          <button type="submit" class="ml-3 bg-[#c9a84c] text-black px-5 rounded-full hover:bg-[#e8c97a] transition text-sm font-semibold">Search</button>
+        </form>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <div class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+          <a href="index.html" class="text-[#c9a84c] font-semibold">Home</a>
+          <a href="about.html" class="hover:text-white transition">About</a>
+          <a href="services.html" class="hover:text-white transition">Services</a>
+          <a href="contact.html" class="hover:text-white transition">Contact</a>
+        </div>
+
+        <div id="authButtons" class="flex items-center gap-4">
+          <button onclick="showLoginModal()" class="px-5 py-2 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition text-sm">Login</button>
+          <button onclick="showRegisterModal()" class="bg-[#c9a84c] text-black px-5 py-2 rounded-lg font-semibold hover:bg-[#e8c97a] transition text-sm">Register</button>
+        </div>
+
+        <div id="userInfo" class="hidden items-center gap-4">
+          <span id="welcomeUser" class="font-medium text-white text-sm"></span>
+          <button onclick="logout()" class="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 text-sm transition">Logout</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-bg min-h-screen flex items-center relative pt-20">
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <p class="text-[#c9a84c] font-semibold text-sm uppercase tracking-widest mb-4">Sunshines Software — Training Institute</p>
+        <h1 class="text-5xl md:text-6xl font-bold leading-tight text-white">
+          Client Management &amp; Course Booking
+        </h1>
+        <p class="mt-6 text-xl text-gray-200 max-w-lg">
+          Join students and clients who trust ClientBook for smarter bookings and better outcomes.
+        </p>
+        <div class="mt-10 flex flex-wrap gap-4">
+          <button onclick="checkLoggedInBeforeBook()" class="bg-[#c9a84c] text-black px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-[#e8c97a] transition shadow-lg">
+            Book a Course Now
+          </button>
+          <a href="contact.html" class="border border-white/40 text-white px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-white/10 transition flex items-center gap-2">
+            <i class="fab fa-whatsapp text-green-400"></i> Talk to Us
+          </a>
+        </div>
+      </div>
+
+      <div class="hidden md:grid grid-cols-2 gap-6">
+        <div class="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-6 text-center">
+          <p class="text-4xl font-bold text-[#c9a84c]">28</p>
+          <p class="text-sm text-gray-300 mt-1">Students Trained</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-6 text-center">
+          <p class="text-4xl font-bold text-[#c9a84c]">12</p>
+          <p class="text-sm text-gray-300 mt-1">Courses Delivered</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-6 text-center">
+          <p class="text-4xl font-bold text-[#c9a84c]">8</p>
+          <p class="text-sm text-gray-300 mt-1">Projects Completed</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-6 text-center">
+          <p class="text-4xl font-bold text-green-400">82%</p>
+          <p class="text-sm text-gray-300 mt-1">Placement Rate</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What We Offer -->
+  <section class="py-20 bg-[#111118]">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-white">Courses &amp; Services,<br>All In One Place</h2>
+        <p class="mt-4 text-gray-400 max-w-2xl mx-auto">From skill-building education to professional consulting — every booking is confirmed, managed, and tracked in real time.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-[#1a1a24] border border-white/10 rounded-3xl p-8 hover:border-[#c9a84c]/40 transition">
+          <div class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-2xl flex items-center justify-center text-2xl mb-6">📚</div>
+          <h3 class="text-xl font-semibold mb-3 text-white">Online Course Booking</h3>
+          <p class="text-gray-400 text-sm">Browse expert-led courses. Instant confirmation with digital certificate on completion.</p>
+          <span class="inline-block mt-6 text-xs bg-blue-500/10 text-blue-400 px-4 py-1 rounded-full">For Students</span>
+        </div>
+        <div class="bg-[#1a1a24] border border-white/10 rounded-3xl p-8 hover:border-[#c9a84c]/40 transition">
+          <div class="w-12 h-12 bg-amber-500/20 text-amber-400 rounded-2xl flex items-center justify-center text-2xl mb-6">⏰</div>
+          <h3 class="text-xl font-semibold mb-3 text-white">Appointment Scheduling</h3>
+          <p class="text-gray-400 text-sm">Book 1-on-1 consulting, design, or IT support sessions with real-time availability.</p>
+          <span class="inline-block mt-6 text-xs bg-amber-500/10 text-amber-400 px-4 py-1 rounded-full">For Clients</span>
+        </div>
+        <div class="bg-[#1a1a24] border border-white/10 rounded-3xl p-8 hover:border-[#c9a84c]/40 transition">
+          <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center text-2xl mb-6">👥</div>
+          <h3 class="text-xl font-semibold mb-3 text-white">Group Workshop Booking</h3>
+          <p class="text-gray-400 text-sm">Corporate or student group registrations with bulk invoicing and batch scheduling.</p>
+          <span class="inline-block mt-6 text-xs bg-emerald-500/10 text-emerald-400 px-4 py-1 rounded-full">For Teams</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Courses + Batch Timings -->
+  <section class="py-16 bg-[#0a0a0f]">
+    <div class="max-w-7xl mx-auto px-6">
+      <h2 class="text-3xl font-bold text-center mb-4 text-white">Our Courses</h2>
+      <p class="text-center text-gray-400 text-sm mb-12">Click on any course to book instantly</p>
+
+      <div class="grid lg:grid-cols-5 gap-8 items-start">
+        <!-- Course Cards -->
+        <div class="lg:col-span-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div onclick="quickBook('Website Development', 12999)" class="card bg-[#1a1a24] border border-white/10 rounded-3xl p-7 text-center cursor-pointer hover:border-[#c9a84c]/40">
+              <div class="text-5xl mb-4">💻</div>
+              <h3 class="text-base font-semibold mb-2 text-white">Website Development</h3>
+              <p class="text-gray-400 text-xs mb-4">Responsive websites in 7-10 days</p>
+              <p class="text-xl font-bold text-[#c9a84c]">₹12,999</p>
+            </div>
+            <div onclick="quickBook('Mobile App Development', 29999)" class="card bg-[#1a1a24] border border-white/10 rounded-3xl p-7 text-center cursor-pointer hover:border-[#c9a84c]/40">
+              <div class="text-5xl mb-4">📱</div>
+              <h3 class="text-base font-semibold mb-2 text-white">Mobile App Development</h3>
+              <p class="text-gray-400 text-xs mb-4">Android &amp; iOS apps</p>
+              <p class="text-xl font-bold text-[#c9a84c]">₹29,999</p>
+            </div>
+            <div onclick="quickBook('Digital Marketing', 8999)" class="card bg-[#1a1a24] border border-white/10 rounded-3xl p-7 text-center cursor-pointer hover:border-[#c9a84c]/40">
+              <div class="text-5xl mb-4">📊</div>
+              <h3 class="text-base font-semibold mb-2 text-white">Digital Marketing</h3>
+              <p class="text-gray-400 text-xs mb-4">SEO + Social Media</p>
+              <p class="text-xl font-bold text-[#c9a84c]">₹8,999</p>
+            </div>
+            <div onclick="quickBook('Software Training', 4999)" class="card bg-[#1a1a24] border border-white/10 rounded-3xl p-7 text-center cursor-pointer hover:border-[#c9a84c]/40">
+              <div class="text-5xl mb-4">🧠</div>
+              <h3 class="text-base font-semibold mb-2 text-white">Software Training</h3>
+              <p class="text-gray-400 text-xs mb-4">Web Dev, Python, Java, MERN</p>
+              <p class="text-xl font-bold text-[#c9a84c]">₹4,999</p>
+            </div>
+            <div onclick="quickBook('Custom Software', 35000)" class="card bg-[#1a1a24] border border-white/10 rounded-3xl p-7 text-center cursor-pointer hover:border-[#c9a84c]/40 sm:col-span-2">
+              <div class="text-5xl mb-4">🔧</div>
+              <h3 class="text-base font-semibold mb-2 text-white">Custom Software</h3>
+              <p class="text-gray-400 text-xs mb-4">ERP, CRM, Inventory System</p>
+              <p class="text-xl font-bold text-[#c9a84c]">₹35,000+</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Batch Timings -->
+        <div class="lg:col-span-2">
+          <div style="background: linear-gradient(135deg, #0f1b3d 0%, #1a1a24 100%); border: 1px solid rgba(201,168,76,0.2); border-radius: 24px; padding: 28px;">
+            <div style="text-align:center; margin-bottom:24px;">
+              <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);border-radius:40px;padding:6px 18px;margin-bottom:12px;">
+                <i class="fas fa-calendar-alt" style="color:#c9a84c;font-size:13px;"></i>
+                <span style="color:#c9a84c;font-size:12px;font-weight:600;letter-spacing:.5px;">BATCH SCHEDULE 2026</span>
+              </div>
+              <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:white;margin-bottom:4px;">Upcoming Batches</h3>
+              <p style="color:#888;font-size:12px;">Limited seats — Book early!</p>
+            </div>
+
+            <!-- April -->
+            <div style="margin-bottom:16px;">
+              <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:#c9a84c;margin-bottom:10px;">🌸 April 2026</div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.1);">
+                <span style="font-weight:700;color:#e8c97a;">Batch 1</span>
+                <span>06<sup>th</sup> April</span>
+                <span style="background:rgba(249,115,22,0.2);color:#f97316;padding:2px 10px;border-radius:9999px;font-size:12px;">Filling Fast</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;">
+                <span style="font-weight:700;color:#e8c97a;">Batch 2</span>
+                <span>20<sup>th</sup> April</span>
+                <span style="background:rgba(37,211,102,0.2);color:#25D366;padding:2px 10px;border-radius:9999px;font-size:12px;">Open</span>
+              </div>
+            </div>
+
+            <!-- May -->
+            <div style="margin-bottom:16px;">
+              <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:#c9a84c;margin-bottom:10px;">🌼 May 2026</div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.1);">
+                <span style="font-weight:700;color:#e8c97a;">Batch 1</span>
+                <span>05<sup>th</sup> May</span>
+                <span style="background:rgba(37,211,102,0.2);color:#25D366;padding:2px 10px;border-radius:9999px;font-size:12px;">Open</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;">
+                <span style="font-weight:700;color:#e8c97a;">Batch 2</span>
+                <span>19<sup>th</sup> May</span>
+                <span style="background:rgba(37,211,102,0.2);color:#25D366;padding:2px 10px;border-radius:9999px;font-size:12px;">Open</span>
+              </div>
+            </div>
+
+            <!-- June -->
+            <div>
+              <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:#c9a84c;margin-bottom:10px;">☀️ June 2026</div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.1);">
+                <span style="font-weight:700;color:#e8c97a;">Batch 1</span>
+                <span>02<sup>nd</sup> June</span>
+                <span style="background:rgba(37,211,102,0.2);color:#25D366;padding:2px 10px;border-radius:9999px;font-size:12px;">Open</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;">
+                <span style="font-weight:700;color:#e8c97a;">Batch 2</span>
+                <span>16<sup>th</sup> June</span>
+                <span style="background:rgba(37,211,102,0.2);color:#25D366;padding:2px 10px;border-radius:9999px;font-size:12px;">Open</span>
+              </div>
+            </div>
+
+            <a href="https://wa.me/919928016573?text=Hello!%20I%20want%20to%20enroll%20in%20an%20upcoming%20batch.%20Please%20share%20details."
+               target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;background:#25D366;color:#fff;border-radius:14px;padding:13px;font-weight:700;font-size:14px;margin-top:24px;text-decoration:none;">
+              <i class="fab fa-whatsapp" style="font-size:20px;"></i> Enquire on WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section (Mobile) -->
+  <section class="py-14 bg-[#111118] md:hidden">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-2 gap-6 text-center">
+        <div class="bg-white/5 rounded-3xl p-6 border border-white/10">
+          <p class="text-4xl font-bold text-[#c9a84c]">28</p>
+          <p class="text-gray-400 text-sm mt-2">Students Trained</p>
+        </div>
+        <div class="bg-white/5 rounded-3xl p-6 border border-white/10">
+          <p class="text-4xl font-bold text-[#c9a84c]">12</p>
+          <p class="text-gray-400 text-sm mt-2">Courses Delivered</p>
+        </div>
+        <div class="bg-white/5 rounded-3xl p-6 border border-white/10">
+          <p class="text-4xl font-bold text-[#c9a84c]">8</p>
+          <p class="text-gray-400 text-sm mt-2">Projects Completed</p>
+        </div>
+        <div class="bg-white/5 rounded-3xl p-6 border border-white/10">
+          <p class="text-4xl font-bold text-green-400">82%</p>
+          <p class="text-gray-400 text-sm mt-2">Placement Rate</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="py-16 bg-[#0a0a0f]">
+    <div class="max-w-7xl mx-auto px-6">
+      <h2 class="text-3xl font-bold text-center mb-12 text-white">What Our Students Say</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-[#1a1a24] border border-white/10 p-8 rounded-3xl hover:border-[#c9a84c]/30 transition">
+          <p class="text-gray-300 text-sm leading-relaxed">"Website Development course se mujhe first job mil gayi. Faculty bahut supportive thi."</p>
+          <span class="block mt-6 text-[#c9a84c] font-semibold text-sm">— Rahul Sharma, Batch 2026</span>
+        </div>
+        <div class="bg-[#1a1a24] border border-white/10 p-8 rounded-3xl hover:border-[#c9a84c]/30 transition">
+          <p class="text-gray-300 text-sm leading-relaxed">"Mobile App course practical tha. Ab main freelance projects le raha hoon."</p>
+          <span class="block mt-6 text-[#c9a84c] font-semibold text-sm">— Satyam Kumar, Batch 2026</span>
+        </div>
+        <div class="bg-[#1a1a24] border border-white/10 p-8 rounded-3xl hover:border-[#c9a84c]/30 transition">
+          <p class="text-gray-300 text-sm leading-relaxed">"Digital Marketing course ne mujhe real-time projects sikhaaye."</p>
+          <span class="block mt-6 text-[#c9a84c] font-semibold text-sm">— Hozaif Nasim, Batch 2026</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Booking Form (Phone Number Added) -->
+  <section id="book" class="py-16 bg-[#111118]">
+    <div class="max-w-3xl mx-auto px-6">
+      <div id="bookingFormContainer" class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl p-10">
+        <h2 class="text-3xl font-bold text-center mb-8 text-white">Book Your Course</h2>
+        <form id="bookingForm" onsubmit="handleBooking(event)" class="space-y-5">
+          <input type="text" id="name" placeholder="Full Name" 
+                 class="w-full p-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-gray-400 focus:border-[#c9a84c] focus:outline-none">
+          <input type="email" id="email" placeholder="Email Address" 
+                 class="w-full p-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-gray-400 focus:border-[#c9a84c] focus:outline-none">
+          <input type="tel" id="phone" placeholder="Phone Number" 
+                 class="w-full p-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-gray-400 focus:border-[#c9a84c] focus:outline-none">
+          <select id="service" required class="w-full p-4 bg-[#1a1a24] border border-white/20 rounded-2xl text-white focus:border-[#c9a84c] focus:outline-none">
+            <option value="">Select Course</option>
+            <option value="Website Development|12999">Website Development - ₹12,999</option>
+            <option value="Mobile App Development|29999">Mobile App Development - ₹29,999</option>
+            <option value="Digital Marketing|8999">Digital Marketing - ₹8,999</option>
+            <option value="Software Training|4999">Software Training - ₹4,999</option>
+            <option value="Custom Software|35000">Custom Software - ₹35,000+</option>
+          </select>
+          <select id="batchDate" required class="w-full p-4 bg-[#1a1a24] border border-white/20 rounded-2xl text-white focus:border-[#c9a84c] focus:outline-none">
+            <option value="">Select Batch Date</option>
+            <optgroup label="🌸 April 2026">
+              <option value="06 April 2026">Batch 1 — 06th April 2026</option>
+              <option value="20 April 2026">Batch 2 — 20th April 2026</option>
+            </optgroup>
+            <optgroup label="🌼 May 2026">
+              <option value="05 May 2026">Batch 1 — 05th May 2026</option>
+              <option value="19 May 2026">Batch 2 — 19th May 2026</option>
+            </optgroup>
+            <optgroup label="☀️ June 2026">
+              <option value="02 June 2026">Batch 1 — 02nd June 2026</option>
+              <option value="16 June 2026">Batch 2 — 16th June 2026</option>
+            </optgroup>
+          </select>
+          <button type="submit" class="w-full bg-[#c9a84c] text-black py-4 rounded-2xl font-semibold text-lg hover:bg-[#e8c97a] transition">
+            Submit Booking
+          </button>
+        </form>
+      </div>
+      <div id="successMessage" class="hidden bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl p-10 text-center">
+        <div class="text-7xl mb-6">🎉</div>
+        <h2 class="text-3xl font-bold text-green-400 mb-3">Booking Successful!</h2>
+        <p class="text-gray-400 mb-8">Your course has been booked successfully.<br>Check your Dashboard now.</p>
+        <button onclick="window.location.href='client-dashboard.html'" class="bg-[#c9a84c] text-black px-10 py-4 rounded-2xl font-semibold text-lg hover:bg-[#e8c97a] transition">
+          Go to My Dashboard
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toast -->
+  <div id="toast" class="hidden fixed bottom-6 right-6 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 z-[9999]">
+    <i class="fas fa-check-circle text-xl"></i>
+    <span id="toastText" class="font-medium text-sm"></span>
+  </div>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+    <div class="bg-[#1a1a24] border border-white/10 rounded-3xl w-full max-w-md p-8 mx-4">
+      <h2 class="text-2xl font-bold mb-6 text-center text-white">Login</h2>
+      <input id="loginEmail" type="email" placeholder="Email" class="w-full p-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-gray-400 mb-4 focus:border-[#c9a84c] focus:outline-none">
+      <input id="loginPass" type="password" placeholder="Password" class="w-full p-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-gray-400 mb-6 focus:border-[#c9a84c] focus:outline-none">
+      <button onclick="handleLogin()" class="w-full bg-[#c9a84c] text-black py-3 rounded-2xl font-semibold hover:bg-[#e8c97a] transition">Login</button>
+      <p class="text-center mt-4 text-sm text-gray-400">Don't have an account? <span onclick="showRegisterModal(); hideLoginModal();" class="text-[#c9a84c] cursor-pointer hover:underline">Register</span></p>
+      <p onclick="hideLoginModal()" class="text-center mt-3 text-[#c9a84c] cursor-pointer text-sm hover:underline">Close</p>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div id="registerModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+    <div class="bg-[#1a1a24] border border-white/10 rounded-3xl w-full max-w-md p-8 mx-4">
+      <h2 class="text-2xl font-bold mb-6 text-center text-white">Register</h2>
+      <input id="regName" type="text" placeholder="Full Name" class="w-full p-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-gray-400 mb-4 focus:border-[#c9a84c] focus:outline-none">
+      <input id="regEmail" type="email" placeholder="Email" class="w-full p-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-gray-400 mb-4 focus:border-[#c9a84c] focus:outline-none">
+      <input id="regPass" type="password" placeholder="Password" class="w-full p-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-gray-400 mb-6 focus:border-[#c9a84c] focus:outline-none">
+      <button onclick="handleRegister()" class="w-full bg-[#c9a84c] text-black py-3 rounded-2xl font-semibold hover:bg-[#e8c97a] transition">Register</button>
+      <p class="text-center mt-4 text-sm text-gray-400">Already have an account? <span onclick="showLoginModal(); hideRegisterModal();" class="text-[#c9a84c] cursor-pointer hover:underline">Login</span></p>
+      <p onclick="hideRegisterModal()" class="text-center mt-3 text-[#c9a84c] cursor-pointer text-sm hover:underline">Close</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-[#111118] text-white py-12 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid md:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-2xl">CB</div>
+            <div>
+              <span class="text-xl font-bold nav-logo">ClientBook</span>
+              <p class="text-xs text-gray-500">by Sunshines Software</p>
+            </div>
+          </div>
+          <p class="text-gray-400 text-sm">Digital solution for training institutes &amp; businesses</p>
+        </div>
+        <div>
+          <h5 class="font-semibold mb-4 text-gray-200">Quick Links</h5>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li><a href="index.html" class="hover:text-white transition">Home</a></li>
+            <li><a href="about.html" class="hover:text-white transition">About</a></li>
+            <li><a href="services.html" class="hover:text-white transition">Services</a></li>
+            <li><a href="contact.html" class="hover:text-white transition">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 class="font-semibold mb-4 text-gray-200">Company</h5>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li>Sunshines Software</li>
+            <li>Jaipur, Rajasthan</li>
+            <li>
+              <a href="https://wa.me/919928016573" target="_blank" class="text-green-400 hover:text-green-300 flex items-center gap-2 mt-1">
+                <i class="fab fa-whatsapp"></i> +91 99280 16573
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h5 class="font-semibold mb-4 text-gray-200">Follow Us</h5>
+          <div class="flex gap-5 text-2xl text-gray-400">
+            <a href="https://www.facebook.com/share/18SUaRSdWu/" target="_blank" class="hover:text-blue-400 transition"><i class="fab fa-facebook"></i></a>
+            <a href="https://instagram.com" target="_blank" class="hover:text-pink-400 transition"><i class="fab fa-instagram"></i></a>
+            <a href="https://youtube.com" target="_blank" class="hover:text-red-500 transition"><i class="fab fa-youtube"></i></a>
+            <a href="https://linkedin.com" target="_blank" class="hover:text-blue-500 transition"><i class="fab fa-linkedin"></i></a>
+            <a href="https://wa.me/919928016573" target="_blank" class="hover:text-green-400 transition"><i class="fab fa-whatsapp"></i></a>
+          </div>
+          <p class="text-xs text-gray-600 mt-8">© 2026 Sunshines Software</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function showToast(message, type = "success") {
+      const toast = document.getElementById('toast');
+      const text = document.getElementById('toastText');
+      text.innerHTML = message;
+      toast.style.backgroundColor = type === "success" ? "#16a34a" : "#ef4444";
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3500);
+    }
+
+    function showLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
+    function hideLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
+    function showRegisterModal() { document.getElementById('registerModal').classList.remove('hidden'); }
+    function hideRegisterModal() { document.getElementById('registerModal').classList.add('hidden'); }
+
+    // Register - No auto login
+    function handleRegister() {
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const pass = document.getElementById('regPass').value.trim();
+
+      if (!name || !email || !pass) {
+        showToast("Please fill all fields!", "error");
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem('users')) || {};
+      if (users[email]) {
+        showToast("Email already registered!", "error");
+        return;
+      }
+
+      users[email] = { name, email, password: pass };
+      localStorage.setItem('users', JSON.stringify(users));
+
+      showToast("Registration successful! Please login now.");
+      hideRegisterModal();
+      showLoginModal();
+    }
+
+    function handleLogin() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPass').value.trim();
+      let users = JSON.parse(localStorage.getItem('users')) || {};
+      const user = users[email];
+
+      if (!user || user.password !== pass) {
+        showToast("Invalid email or password!", "error");
+        return;
+      }
+
+      localStorage.setItem('currentUser', JSON.stringify({ name: user.name, email }));
+      showToast("Login successful!");
+      hideLoginModal();
+      checkLoggedIn();
+    }
+
+    // Auto Fill Booking Form (including phone if saved earlier)
+    function autoFillBookingForm() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUser) {
+        document.getElementById('name').value = currentUser.name || '';
+        document.getElementById('email').value = currentUser.email || '';
+        // Phone agar pehle se saved hai to fill kar do (optional)
+        const savedPhone = currentUser.phone || '';
+        if (savedPhone) document.getElementById('phone').value = savedPhone;
+      }
+    }
+
+    function handleBooking(e) {
+      e.preventDefault();
+
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (!currentUser) {
+        showToast("Please login first!", "error");
+        showLoginModal();
+        return;
+      }
+
+      const name = document.getElementById('name').value.trim() || currentUser.name;
+      const email = document.getElementById('email').value.trim() || currentUser.email;
+      const phone = document.getElementById('phone').value.trim();
+      const selected = document.getElementById('service').value;
+      const batchDate = document.getElementById('batchDate').value;
+
+      if (!selected) { showToast("Please select a course!", "error"); return; }
+      if (!batchDate) { showToast("Please select a batch date!", "error"); return; }
+
+      const [service, amountStr] = selected.split('|');
+      const amount = Number(amountStr);
+
+      let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+      bookings.push({ 
+        name, 
+        email, 
+        phone: phone || '-', 
+        service, 
+        price: amount, 
+        date: batchDate, 
+        status: "Pending" 
+      });
+      localStorage.setItem('bookings', JSON.stringify(bookings));
+
+      // Optional: Save phone in currentUser for future bookings
+      currentUser.phone = phone;
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+      document.getElementById('bookingFormContainer').classList.add('hidden');
+      document.getElementById('successMessage').classList.remove('hidden');
+      showToast("Booking Successful!", "success");
+    }
+
+    function quickBook(service, price) {
+      if (!localStorage.getItem('currentUser')) {
+        showToast("Please login first!", "error");
+        showLoginModal();
+        return;
+      }
+      document.getElementById('service').value = service + "|" + price;
+      document.getElementById('book').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function checkLoggedInBeforeBook() {
+      if (!localStorage.getItem('currentUser')) {
+        showToast("Please login or register first!", "error");
+        showLoginModal();
+      } else {
+        document.getElementById('book').scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    function checkLoggedIn() {
+      const user = localStorage.getItem('currentUser');
+      if (user) {
+        const parsed = JSON.parse(user);
+        document.getElementById('authButtons').classList.add('hidden');
+        document.getElementById('userInfo').classList.remove('hidden');
+        document.getElementById('welcomeUser').textContent = `Welcome, ${parsed.name}`;
+        autoFillBookingForm();
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('currentUser');
+      document.getElementById('authButtons').classList.remove('hidden');
+      document.getElementById('userInfo').classList.add('hidden');
+      showToast("Logged out successfully!");
+    }
+
+    window.onload = function() {
+      checkLoggedIn();
+      setTimeout(autoFillBookingForm, 500);
+    };
+  </script>
+</body>
+</html>

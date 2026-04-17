@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Courses & Services - ClientBook | Sunshines Software</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .card { transition: all 0.4s ease; }
+    .card:hover { transform: translateY(-10px); box-shadow: 0 25px 40px -10px rgba(59,130,246,0.18); }
+    .badge { display: inline-block; background: #dbeafe; color: #1d4ed8; font-size: 11px; font-weight: 600; border-radius: 999px; padding: 2px 10px; margin-bottom: 8px; letter-spacing: 0.04em; }
+    .star { color: #f59e0b; }
+    .review-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 1.25rem; padding: 1.5rem; transition: box-shadow 0.3s; }
+    .review-card:hover { box-shadow: 0 8px 30px rgba(59,130,246,0.10); }
+    .why-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+    .nav-link { position: relative; }
+    .nav-link::after { content: ''; position: absolute; left: 0; bottom: -2px; width: 0; height: 2px; background: #2563eb; border-radius: 2px; transition: width 0.3s; }
+    .nav-link:hover::after { width: 100%; }
+    .mobile-menu { display: none; }
+    @media (max-width: 768px) {
+      .desktop-nav { display: none; }
+      .mobile-menu-btn { display: flex !important; }
+      .mobile-menu.open { display: flex; }
+    }
+    .hero-bg { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #6366f1 100%); }
+    .stat-card { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); border-radius: 1rem; padding: 1.25rem 1.75rem; text-align: center; }
+    .tag { font-size: 12px; padding: 3px 10px; border-radius: 999px; font-weight: 500; }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50 border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow">CB</div>
+        <div>
+          <span class="text-xl font-bold text-blue-700 leading-none block">ClientBook</span>
+          <span class="text-xs text-gray-400 leading-none">Sunshines Software</span>
+        </div>
+      </div>
+      <div class="desktop-nav flex items-center gap-8 text-sm font-medium text-gray-600">
+        <a href="index.html" class="nav-link hover:text-blue-600">Home</a>
+        <a href="about.html" class="nav-link hover:text-blue-600">About</a>
+        <span class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-0.5">Services</span>
+        <a href="contact.html" class="nav-link hover:text-blue-600">Contact</a>
+      </div>
+
+      <!-- Dynamic Auth Section (Fix kiya gaya) -->
+      <div id="authSection" class="flex items-center gap-3">
+        <!-- JS se change hoga -->
+      </div>
+
+      <button class="mobile-menu-btn hidden items-center justify-center w-9 h-9 rounded-lg hover:bg-gray-100 ml-2" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars text-gray-600"></i>
+      </button>
+    </div>
+    <div id="mobileMenu" class="mobile-menu flex-col gap-1 px-6 pb-4 border-t border-gray-100 bg-white">
+      <a href="index.html" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Home</a>
+      <a href="about.html" class="block py-2 text-sm text-gray-700 hover:text-blue-600">About</a>
+      <span class="block py-2 text-sm text-blue-600 font-semibold">Services</span>
+      <a href="contact.html" class="block py-2 text-sm text-gray-700 hover:text-blue-600">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero-bg text-white pt-32 pb-20 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 right-0 w-96 h-96 bg-indigo-300 rounded-full blur-3xl"></div>
+    </div>
+    <div class="max-w-7xl mx-auto px-6 text-center relative z-10">
+      <span class="inline-block bg-white/20 text-white text-sm font-semibold px-4 py-1.5 rounded-full mb-5 border border-white/30">
+        🌟 Jaipur's Leading IT Training Institute
+      </span>
+      <h1 class="text-4xl md:text-6xl font-bold mb-5 leading-tight">
+        Our Courses &<br><span class="text-yellow-300">Services</span>
+      </h1>
+      <p class="text-xl text-blue-100 max-w-2xl mx-auto mb-10">
+        Practical IT training and professional software services — learn directly from industry experts.
+      </p>
+      <div class="max-w-xl mx-auto relative">
+        <input type="search" id="searchInput" placeholder="Search courses or services..." oninput="filterCards()"
+          class="w-full px-6 py-4 rounded-2xl text-gray-800 text-base shadow-lg pr-14 border-2 border-transparent focus:outline-none" />
+        <i class="fas fa-search absolute right-5 top-1/2 -translate-y-1/2 text-blue-400 text-lg"></i>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 max-w-3xl mx-auto">
+        <div class="stat-card"><p class="text-2xl font-bold">150+</p><p class="text-blue-200 text-sm mt-1">Students Trained</p></div>
+        <div class="stat-card"><p class="text-2xl font-bold">8+</p><p class="text-blue-200 text-sm mt-1">Courses Offered</p></div>
+        <div class="stat-card"><p class="text-2xl font-bold">10+</p><p class="text-blue-200 text-sm mt-1">Projects Delivered</p></div>
+        <div class="stat-card"><p class="text-2xl font-bold">100%</p><p class="text-blue-200 text-sm mt-1">Practical Training</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Tabs -->
+  <section class="bg-white border-b border-gray-100 sticky top-16 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 flex gap-3 overflow-x-auto py-4">
+      <button onclick="filterByCategory('all')" id="tab-all" class="tab-btn px-5 py-2 rounded-full text-sm font-semibold bg-blue-600 text-white whitespace-nowrap transition">All</button>
+      <button onclick="filterByCategory('course')" id="tab-course" class="tab-btn px-5 py-2 rounded-full text-sm font-semibold bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600 whitespace-nowrap transition">🎓 Courses</button>
+      <button onclick="filterByCategory('service')" id="tab-service" class="tab-btn px-5 py-2 rounded-full text-sm font-semibold bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600 whitespace-nowrap transition">💼 IT Services</button>
+      <button onclick="filterByCategory('marketing')" id="tab-marketing" class="tab-btn px-5 py-2 rounded-full text-sm font-semibold bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600 whitespace-nowrap transition">📊 Marketing</button>
+    </div>
+  </section>
+
+  <!-- Cards -->
+  <section class="py-16">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Popular Courses & Services</h2>
+        <p class="text-gray-500 mt-3 text-lg">Practical skills that boost your career and business</p>
+      </div>
+      <div id="cardsGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <!-- Tumhare purane saare cards (koi nahi hataya) -->
+        <div class="card bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden" data-category="course" data-title="software training web dev python java batch">
+          <div class="h-44 bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center relative">
+            <span class="text-7xl">🧠</span>
+            <span class="absolute top-4 left-4 tag bg-yellow-100 text-yellow-800">⭐ Most Popular</span>
+          </div>
+          <div class="p-7">
+            <span class="badge">Course</span>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Software Training</h3>
+            <p class="text-gray-500 text-sm mb-1">Web Development, Python, Java — Batch of 8–10 students</p>
+            <p class="text-xs text-blue-500 mb-3">📍 Offline + Online available</p>
+            <div class="flex items-center gap-1 mb-4"><span class="star text-sm">★★★★★</span><span class="text-sm text-gray-400 ml-1">Beginner friendly</span></div>
+            <div class="flex items-center justify-between mb-5"><span class="text-2xl font-bold text-blue-600">₹4,999</span><span class="text-sm line-through text-gray-400">₹7,999</span></div>
+            <button onclick="openBookingModal('Software Training', 4999)" class="w-full bg-blue-600 text-white py-3.5 rounded-2xl font-semibold hover:bg-blue-700 transition">Book Now</button>
+          </div>
+        </div>
+
+        <div class="card bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden" data-category="course" data-title="website development course html css javascript">
+          <div class="h-44 bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+            <span class="text-7xl">💻</span>
+          </div>
+          <div class="p-7">
+            <span class="badge">Course</span>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Website Development Course</h3>
+            <p class="text-gray-500 text-sm mb-1">HTML, CSS, JavaScript — From basics to professional level</p>
+            <p class="text-xs text-blue-500 mb-3">📍 Small batch with personal attention</p>
+            <div class="flex items-center gap-1 mb-4"><span class="star text-sm">★★★★★</span><span class="text-sm text-gray-400 ml-1">Hands-on projects</span></div>
+            <div class="flex items-center justify-between mb-5"><span class="text-2xl font-bold text-blue-600">₹4,999</span><span class="text-sm line-through text-gray-400">₹8,999</span></div>
+            <button onclick="openBookingModal('Website Development Course', 4999)" class="w-full bg-blue-600 text-white py-3.5 rounded-2xl font-semibold hover:bg-blue-700 transition">Book Now</button>
+          </div>
+        </div>
+
+        <div class="card bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden" data-category="course" data-title="python programming course">
+          <div class="h-44 bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center">
+            <span class="text-7xl">🐍</span>
+          </div>
+          <div class="p-7">
+            <span class="badge">Course</span>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Python Programming</h3>
+            <p class="text-gray-500 text-sm mb-1">From basics to scripting, automation and logic building</p>
+            <p class="text-xs text-blue-500 mb-3">📍 Beginner to Intermediate level</p>
+            <div class="flex items-center gap-1 mb-4"><span class="star text-sm">★★★★☆</span><span class="text-sm text-gray-400 ml-1">Project included</span></div>
+            <div class="flex items-center justify-between mb-5"><span class="text-2xl font-bold text-blue-600">₹3,999</span><span class="text-sm line-through text-gray-400">₹6,999</span></div>
+            <button onclick="openBookingModal('Python Programming', 3999)" class="w-full bg-blue-600 text-white py-3.5 rounded-2xl font-semibold hover:bg-blue-700 transition">Book Now</button>
+          </div>
+        </div>
+
+        <div class="card bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden" data-category="course" data-title="java programming course core">
+          <div class="h-44 bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+            <span class="text-7xl">☕</span>
+          </div>
+          <div class="p-7">
+            <span class="badge">Course</span>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Java Programming</h3>
+            <p class="text-gray-500 text-sm mb-1">Core Java, OOP concepts — useful for interviews</p>
+            <p class="text-xs text-blue-500 mb-3">📍 Practical + Theory</p>
+            <div class="flex items-center gap-1 mb-4"><span class="star text-sm">★★★★☆</span><span class="text-sm text-gray-400 ml-1">Certificate on completion</span></div>
+            <div class="flex items-center justify-between mb-5"><span class="text-2xl font-bold text-blue-600">₹4,499</span><span class="text-sm line-through text-gray-400">₹7,999</span></div>
+            <button onclick="openBookingModal('Java Programming', 4499)" class="w-full bg-blue-600 text-white py-3.5 rounded-2xl font-semibold hover:bg-blue-700 transition">Book Now</button>
+          </div>
+        </div>
+
+        <div class="card bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden" data-category="service" data-title="website development service business">
+          <div class="h-44 bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center relative">
+            <span class="text-7xl">🌐</span>
+            <span class="absolute top-4 left-4 tag bg-green-100 text-green-800">7–10 Days</span>
+          </div>
+          <div class="p-7">
+            <span class="badge" style="background:#dcfce7;color:#166534;">Service</span>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Website Development</h3>
+            <p class="text-gray-500 text-sm mb-1">Responsive website with admin panel for your business</p>
+            <p class="text-xs text-blue-500 mb-3">🛠 Delivery in 7–10 working days</p>
+            <div class="flex items-center gap-1 mb-4"><span class="star text-sm">★★★★★</span><span class="text-sm text-gray-400 ml-1">Client-approved design</span></div>
+            <div class="flex items-center justify-between mb-5"><span class="text-2xl font-bold text-blue-600">₹12,999</span><span class="text-sm text-gray-400">Starting price</span></div>
+            <button onclick="openBookingModal('Website Development', 12999)" class="w-full bg-blue-600 text-white py-3.5 rounded-2xl font-semibold hover:bg-blue-700 transition">Book Now</button>
+          </div>
+        </div>
+
+        <div class="card bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden" data-category="service" data-title="mobile app development android ios">
+          <div class="h-44 bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
+            <span class="text-7xl">📱</span>
+          </div>
+          <div class="p-7">
+            <span class="badge" style="background:#dcfce7;color:#166534;">Service</span>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Mobile App Development</h3>
+            <p class="text-gray-500 text-sm mb-1">Android + iOS app with backend and admin panel</p>
+            <p class="text-xs text-blue-500 mb-3">🛠 Custom quote based on requirements</p>
+            <div class="flex items-center gap-1 mb-4"><span class="star text-sm">★★★★☆</span><span class="text-sm text-gray-400 ml-1">Requirement-based</span></div>
+            <div class="flex items-center justify-between mb-5"><span class="text-2xl font-bold text-blue-600">₹29,999</span><span class="text-sm text-gray-400">Starting price</span></div>
+            <button onclick="openBookingModal('Mobile App Development', 29999)" class="w-full bg-blue-600 text-white py-3.5 rounded-2xl font-semibold hover:bg-blue-700 transition">Book Now</button>
+          </div>
+        </div>
+
+        <div class="card bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden" data-category="marketing" data-title="digital marketing seo google ads social media">
+          <div class="h-44 bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center">
+            <span class="text-7xl">📊</span>
+          </div>
+          <div class="p-7">
+            <span class="badge" style="background:#fce7f3;color:#9d174d;">Marketing</span>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Digital Marketing</h3>
+            <p class="text-gray-500 text-sm mb-1">SEO, Google Ads, Social Media Management</p>
+            <p class="text-xs text-blue-500 mb-3">📅 Monthly retainer package available</p>
+            <div class="flex items-center gap-1 mb-4"><span class="star text-sm">★★★★★</span><span class="text-sm text-gray-400 ml-1">Result oriented</span></div>
+            <div class="flex items-center justify-between mb-5"><span class="text-2xl font-bold text-blue-600">₹8,999</span><span class="text-sm text-gray-400">/month</span></div>
+            <button onclick="openBookingModal('Digital Marketing', 8999)" class="w-full bg-blue-600 text-white py-3.5 rounded-2xl font-semibold hover:bg-blue-700 transition">Book Now</button>
+          </div>
+        </div>
+
+        <div class="card bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden" data-category="service" data-title="custom software erp crm inventory system">
+          <div class="h-44 bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center">
+            <span class="text-7xl">🔧</span>
+          </div>
+          <div class="p-7">
+            <span class="badge" style="background:#dcfce7;color:#166534;">Service</span>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Custom Software / ERP</h3>
+            <p class="text-gray-500 text-sm mb-1">ERP, CRM, Inventory System as per your requirements</p>
+            <p class="text-xs text-blue-500 mb-3">📋 Free requirement discussion available</p>
+            <div class="flex items-center gap-1 mb-4"><span class="star text-sm">★★★★★</span><span class="text-sm text-gray-400 ml-1">Fully customized</span></div>
+            <div class="flex items-center justify-between mb-5"><span class="text-2xl font-bold text-blue-600">₹35,000+</span><span class="text-sm text-gray-400">Custom quote</span></div>
+            <button onclick="openBookingModal('Custom Software / ERP', 35000)" class="w-full bg-blue-600 text-white py-3.5 rounded-2xl font-semibold hover:bg-blue-700 transition">Book Now</button>
+          </div>
+        </div>
+
+      </div>
+      <div id="noResults" class="hidden text-center py-16">
+        <span class="text-5xl">🔍</span>
+        <p class="text-gray-500 mt-4 text-lg">No courses or services found. Try a different keyword.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us -->
+  <section class="py-16 bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Why Choose Sunshines Software?</h2>
+        <p class="text-gray-500 mt-3">We don't just teach — we build your future</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-2xl p-8 text-center shadow-sm border border-blue-100 hover:shadow-md transition">
+          <div class="why-icon bg-blue-100 text-blue-600 mx-auto mb-4">👨‍🏫</div>
+          <h4 class="text-lg font-bold text-gray-800 mb-2">Expert Trainers</h4>
+          <p class="text-gray-500 text-sm">Practical training from industry professionals — not just theory</p>
+        </div>
+        <div class="bg-white rounded-2xl p-8 text-center shadow-sm border border-green-100 hover:shadow-md transition">
+          <div class="why-icon bg-green-100 text-green-600 mx-auto mb-4">🏆</div>
+          <h4 class="text-lg font-bold text-gray-800 mb-2">Certificate</h4>
+          <p class="text-gray-500 text-sm">Industry-recognized certificate on course completion</p>
+        </div>
+        <div class="bg-white rounded-2xl p-8 text-center shadow-sm border border-purple-100 hover:shadow-md transition">
+          <div class="why-icon bg-purple-100 text-purple-600 mx-auto mb-4">🛠️</div>
+          <h4 class="text-lg font-bold text-gray-800 mb-2">Live Projects</h4>
+          <p class="text-gray-500 text-sm">Work on real projects to build a strong portfolio</p>
+        </div>
+        <div class="bg-white rounded-2xl p-8 text-center shadow-sm border border-orange-100 hover:shadow-md transition">
+          <div class="why-icon bg-orange-100 text-orange-600 mx-auto mb-4">💼</div>
+          <h4 class="text-lg font-bold text-gray-800 mb-2">Job Support</h4>
+          <p class="text-gray-500 text-sm">Resume building, interview preparation & placement assistance</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Strip -->
+  <section class="py-12 bg-white border-y border-gray-100">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div class="flex flex-col items-center gap-2">
+          <span class="text-3xl">📡</span>
+          <p class="font-semibold text-gray-700">Live Classes</p>
+          <p class="text-xs text-gray-400">Interactive offline & online sessions</p>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+          <span class="text-3xl">🎓</span>
+          <p class="font-semibold text-gray-700">Certificate</p>
+          <p class="text-xs text-gray-400">On course completion</p>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+          <span class="text-3xl">👥</span>
+          <p class="font-semibold text-gray-700">Small Batches</p>
+          <p class="text-xs text-gray-400">8–10 students — personal attention</p>
+        </div>
+        <div class="flex flex-col items-center gap-2">
+          <span class="text-3xl">🤝</span>
+          <p class="font-semibold text-gray-700">Doubt Sessions</p>
+          <p class="text-xs text-gray-400">Clear your doubts anytime</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Student Reviews -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800">What Our Students Say</h2>
+        <p class="text-gray-500 mt-3">Real feedback from those who have learned with us</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="review-card">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-lg">RK</div>
+            <div>
+              <p class="font-semibold text-gray-800">vignesh Raj</p>
+              <p class="text-xs text-gray-400">Web Development Student, Jaipur</p>
+            </div>
+          </div>
+          <div class="text-yellow-400 text-sm mb-3">★★★★★</div>
+          <p class="text-gray-600 text-sm leading-relaxed">"Excellent course! Everything was taught practically. I couldn't even make a basic website before, now I can build one myself. The trainer was very patient."</p>
+        </div>
+        <div class="review-card">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-lg">PS</div>
+            <div>
+              <p class="font-semibold text-gray-800">Satyam kumar</p>
+              <p class="text-xs text-gray-400">Software Training Student, Jaipur</p>
+            </div>
+          </div>
+          <div class="text-yellow-400 text-sm mb-3">★★★★★</div>
+          <p class="text-gray-600 text-sm leading-relaxed">"After completing the course, I got job assistance. The placement support from Sunshines Software was really helpful. Highly recommended!"</p>
+        </div>
+        <div class="review-card">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 font-bold text-lg">AK</div>
+            <div>
+              <p class="font-semibold text-gray-800">Hozaif nasim</p>
+              <p class="text-xs text-gray-400">Business Owner, Jaipur</p>
+            </div>
+          </div>
+          <div class="text-yellow-400 text-sm mb-3">★★★★★</div>
+          <p class="text-gray-600 text-sm leading-relaxed">"They developed a professional website for my business. Delivered on time and provided excellent post-delivery support. Worth every penny!"</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-20 hero-bg text-white text-center relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute bottom-0 left-0 w-80 h-80 bg-white rounded-full blur-3xl"></div>
+    </div>
+    <div class="max-w-3xl mx-auto px-6 relative z-10">
+      <h2 class="text-3xl md:text-5xl font-bold mb-5">Start Today!</h2>
+      <p class="text-blue-100 text-xl mb-10">One small step towards a bigger future. Talk to us, join a course, or book a service.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button onclick="document.getElementById('cardsGrid').scrollIntoView({behavior:'smooth'})"
+          class="px-10 py-4 bg-yellow-400 text-gray-900 rounded-2xl font-bold text-lg hover:bg-yellow-300 shadow-lg transition">
+          🚀 Start Learning Now
+        </button>
+        <a href="contact.html" class="px-10 py-4 bg-white/10 text-white border border-white/30 rounded-2xl font-semibold text-lg hover:bg-white/20 transition">
+          📞 Talk to Our Expert
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-400 py-10 text-center">
+    <div class="flex items-center justify-center gap-2 mb-3">
+      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">CB</div>
+      <span class="text-white font-semibold">ClientBook — Sunshines Software</span>
+    </div>
+    <p class="text-sm">© 2026 Sunshines Software, Jaipur. All rights reserved.</p>
+  </footer>
+
+  <!-- Booking Modal -->
+  <div id="bookingModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[9999] p-4">
+    <div class="bg-white rounded-3xl w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-start justify-between mb-6">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-800" id="modalServiceName">Book Service</h2>
+          <p class="text-gray-400 mt-1" id="modalPrice"></p>
+        </div>
+        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+      </div>
+      <form id="modalForm" onsubmit="submitServiceBooking(event)">
+        <input type="text" id="modalName" placeholder="Your Full Name *" required class="w-full p-4 border border-gray-200 rounded-2xl mb-4 text-sm focus:outline-none focus:border-blue-400">
+        <input type="email" id="modalEmail" placeholder="Email Address *" required class="w-full p-4 border border-gray-200 rounded-2xl mb-4 text-sm focus:outline-none focus:border-blue-400">
+        <input type="tel" id="modalPhone" placeholder="Phone Number *" required class="w-full p-4 border border-gray-200 rounded-2xl mb-4 text-sm focus:outline-none focus:border-blue-400">
+        <textarea id="modalDescription" rows="3" placeholder="Describe your requirement or message..." class="w-full p-4 border border-gray-200 rounded-2xl mb-4 resize-none text-sm focus:outline-none focus:border-blue-400"></textarea>
+        <input type="date" id="modalDate" required class="w-full p-4 border border-gray-200 rounded-2xl mb-6 text-sm focus:outline-none focus:border-blue-400">
+        <div class="flex gap-3">
+          <button type="button" onclick="closeModal()" class="flex-1 py-4 border border-gray-200 rounded-2xl font-medium text-gray-600 hover:bg-gray-50">Cancel</button>
+          <button type="submit" class="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-semibold hover:bg-blue-700">Submit Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="hidden fixed bottom-6 right-6 bg-green-600 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 z-[99999]">
+    <i class="fas fa-check-circle text-xl"></i>
+    <span id="toastText" class="font-medium"></span>
+  </div>
+
+  <script>
+    let currentService = "", currentPrice = 0;
+
+    // ====================== AUTH FIX ======================
+    function checkAuth() {
+      const user = JSON.parse(localStorage.getItem('currentUser'));
+      const authSection = document.getElementById('authSection');
+
+      if (user) {
+        authSection.innerHTML = `
+          <span class="text-sm font-medium text-gray-700">Hi, ${user.name}</span>
+          <button onclick="logout()" class="px-5 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 text-sm transition">Logout</button>
+        `;
+      } else {
+        authSection.innerHTML = `
+          <button onclick="window.location.href='index.html'" class="px-5 py-2 bg-blue-50 text-blue-700 rounded-lg font-medium hover:bg-blue-100 text-sm transition">Login</button>
+          <button onclick="window.location.href='index.html'" class="px-5 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 text-sm shadow transition">Register</button>
+        `;
+      }
+    }
+
+    function logout() {
+      if (confirm("Do you want to logout?")) {
+        localStorage.removeItem('currentUser');
+        checkAuth();
+      }
+    }
+
+    // ====================== BOOKING ======================
+    function openBookingModal(serviceName, price) {
+      currentService = serviceName; 
+      currentPrice = price;
+      document.getElementById('modalServiceName').textContent = serviceName;
+      document.getElementById('modalPrice').innerHTML = `Price: <span class="font-bold text-blue-600">₹${price.toLocaleString()}</span>`;
+      document.getElementById('bookingModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('bookingModal').classList.add('hidden');
+      document.getElementById('modalForm').reset();
+    }
+
+    function submitServiceBooking(e) {
+      e.preventDefault();
+      const name = document.getElementById('modalName').value.trim();
+      const email = document.getElementById('modalEmail').value.trim();
+      const phone = document.getElementById('modalPhone').value.trim();
+      const description = document.getElementById('modalDescription').value.trim();
+      const date = document.getElementById('modalDate').value;
+      
+      if (!name || !email || !phone || !date) { 
+        alert("Please fill all required fields"); 
+        return; 
+      }
+
+      let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+      bookings.push({ 
+        type: "Service", 
+        service: currentService, 
+        name, 
+        email, 
+        phone, 
+        description, 
+        date: new Date(date).toLocaleDateString('en-IN'), 
+        price: currentPrice, 
+        status: "Pending" 
+      });
+      localStorage.setItem('bookings', JSON.stringify(bookings));
+      
+      closeModal();
+      showToast(`✅ Your request for ${currentService} has been submitted successfully!`);
+      setTimeout(() => { window.location.href = "client-dashboard.html"; }, 1800);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastText').textContent = msg;
+      t.classList.remove('hidden');
+      setTimeout(() => t.classList.add('hidden'), 3000);
+    }
+
+    function toggleMobileMenu() { 
+      document.getElementById('mobileMenu').classList.toggle('open'); 
+    }
+
+    function filterCards() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('#cardsGrid > div[data-category]');
+      let visible = 0;
+      cards.forEach(card => {
+        const match = (card.getAttribute('data-title') || '').includes(q) || q === '';
+        card.style.display = match ? '' : 'none';
+        if (match) visible++;
+      });
+      document.getElementById('noResults').classList.toggle('hidden', visible > 0);
+    }
+
+    function filterByCategory(cat) {
+      const cards = document.querySelectorAll('#cardsGrid > div[data-category]');
+      cards.forEach(card => {
+        card.style.display = (cat === 'all' || card.getAttribute('data-category') === cat) ? '' : 'none';
+      });
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white');
+        btn.classList.add('bg-gray-100', 'text-gray-600');
+      });
+      const active = document.getElementById('tab-' + cat);
+      if (active) { 
+        active.classList.add('bg-blue-600', 'text-white'); 
+        active.classList.remove('bg-gray-100', 'text-gray-600'); 
+      }
+      const visible = [...cards].filter(c => c.style.display !== 'none').length;
+      document.getElementById('noResults').classList.toggle('hidden', visible > 0);
+    }
+
+    // Initialize
+    window.onload = function() {
+      checkAuth();
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Dashboard - ClientBook | Sunshines Software</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:#0a0a0f;color:#e8e8f0;min-height:100vh;}
+    .sidebar{position:fixed;left:0;top:0;bottom:0;width:255px;background:linear-gradient(180deg,#10102a,#0f1520);border-right:1px solid rgba(201,168,76,.12);display:flex;flex-direction:column;z-index:100;transition:transform .3s;}
+    .logo-text{font-family:'Playfair Display',serif;font-size:1.45rem;font-weight:900;background:linear-gradient(135deg,#c9a84c,#e8c97a);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    .nav-item{display:flex;align-items:center;gap:12px;padding:13px 22px;font-size:13.5px;font-weight:500;color:#8888aa;cursor:pointer;transition:all .2s;border-left:3px solid transparent;text-decoration:none;}
+    .nav-item:hover{color:#e8e8f0;background:rgba(255,255,255,.04);}
+    .nav-item.active{color:#c9a84c;background:rgba(201,168,76,.08);border-left-color:#c9a84c;}
+    .nav-item i{width:18px;text-align:center;}
+    .sec-label{padding:14px 22px 6px;font-size:10px;letter-spacing:1.5px;color:#333355;text-transform:uppercase;font-weight:600;}
+    .main{margin-left:255px;min-height:100vh;}
+    .topbar{background:rgba(10,10,20,.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06);padding:14px 28px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50;}
+    .content{padding:28px;}
+    .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;}
+    .scard{background:#13131f;border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:20px;position:relative;overflow:hidden;transition:transform .2s;}
+    .scard:hover{transform:translateY(-3px);}
+    .scard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+    .scard.gold::before{background:linear-gradient(90deg,#c9a84c,#e8c97a);}
+    .scard.green::before{background:linear-gradient(90deg,#22c55e,#4ade80);}
+    .scard.blue::before{background:linear-gradient(90deg,#3b82f6,#60a5fa);}
+    .scard.red::before{background:linear-gradient(90deg,#ef4444,#f87171);}
+    .scard.purple::before{background:linear-gradient(90deg,#a855f7,#c084fc);}
+    .snum{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;}
+    .slabel{font-size:11.5px;color:#888;margin-top:4px;}
+    .sicon{position:absolute;right:16px;top:16px;font-size:26px;opacity:.1;}
+    /* BOOKING CARD */
+    .bcard{background:#13131f;border:1px solid rgba(255,255,255,.07);border-radius:20px;overflow:hidden;margin-bottom:18px;transition:all .25s;}
+    .bcard:hover{border-color:rgba(201,168,76,.3);box-shadow:0 8px 28px rgba(0,0,0,.35);}
+    .bcard-head{padding:18px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05);flex-wrap:wrap;gap:10px;}
+    .bcard-body{padding:20px 22px;}
+    .dg{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .di label{font-size:10.5px;color:#555577;text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:3px;}
+    .di span{font-size:13.5px;color:#e8e8f0;font-weight:500;}
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:40px;font-size:11.5px;font-weight:600;}
+    .bp{background:rgba(251,191,36,.12);color:#fbbf24;}
+    .bo{background:rgba(245,158,11,.12);color:#f59e0b;}
+    .bc{background:rgba(34,197,94,.12);color:#22c55e;}
+    .bx{background:rgba(239,68,68,.12);color:#ef4444;}
+    .bt-course{background:rgba(59,130,246,.12);color:#60a5fa;}
+    .bt-service{background:rgba(168,85,247,.12);color:#c084fc;}
+    .bt-contact{background:rgba(251,146,60,.12);color:#fb923c;}
+    /* PAYMENT BAR */
+    .pbar-bg{background:rgba(255,255,255,.07);border-radius:40px;height:8px;overflow:hidden;margin-top:6px;}
+    .pbar-fill{height:100%;border-radius:40px;transition:width .7s ease;}
+    /* PROFILE */
+    .ifield{width:100%;padding:11px 14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:11px;color:#e8e8f0;font-size:13.5px;outline:none;transition:border .2s;font-family:'DM Sans',sans-serif;}
+    .ifield:focus{border-color:#c9a84c;}
+    .btn-save{background:#c9a84c;color:#0a0a0f;padding:11px 26px;border-radius:11px;font-weight:700;font-size:14px;cursor:pointer;border:none;transition:background .2s;}
+    .btn-save:hover{background:#e8c97a;}
+    /* TABS */
+    .tab-bar{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+    .tbtn{padding:7px 18px;border-radius:40px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.1);color:#8888aa;background:transparent;transition:all .2s;}
+    .tbtn.active{background:#c9a84c;color:#0a0a0f;border-color:#c9a84c;}
+    .section{display:none;}
+    .section.active{display:block;}
+    .empty-box{text-align:center;padding:56px 20px;}
+    .empty-box .ei{font-size:50px;margin-bottom:14px;opacity:.4;}
+    .empty-box p{color:#8888aa;font-size:14.5px;}
+    .empty-box a{color:#c9a84c;text-decoration:none;}
+    #toast{position:fixed;bottom:22px;right:22px;padding:13px 20px;border-radius:13px;color:white;font-size:13px;font-weight:600;display:flex;align-items:center;gap:9px;z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;}
+    #toast.show{transform:translateY(0);opacity:1;}
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99;}
+    @media(max-width:768px){
+      .sidebar{transform:translateX(-100%);}
+      .sidebar.open{transform:translateX(0);}
+      .sidebar-overlay.show{display:block;}
+      .main{margin-left:0;}
+      .content{padding:16px;}
+      .topbar{padding:13px 16px;}
+      .dg{grid-template-columns:1fr!important;}
+      #menuBtn{display:block!important;}
+    }
+    ::-webkit-scrollbar{width:5px;}
+    ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:10px;}
+  </style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div style="padding:24px 22px 18px;border-bottom:1px solid rgba(255,255,255,.05);">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:34px;height:34px;background:#1d4ed8;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;">CB</div>
+      <span class="logo-text">ClientBook</span>
+    </div>
+    <p style="font-size:11px;color:#333355;margin-top:5px;">Student Dashboard</p>
+  </div>
+  <nav style="flex:1;overflow-y:auto;padding:10px 0;">
+    <div class="sec-label">Main</div>
+    <div class="nav-item active" onclick="showSec('overview',this)"><i class="fas fa-home"></i>Overview</div>
+    <div class="nav-item" onclick="showSec('bookings',this)"><i class="fas fa-book-open"></i>My Bookings</div>
+    <div class="nav-item" onclick="showSec('courses',this)"><i class="fas fa-graduation-cap"></i>My Courses</div>
+    <div class="sec-label">Account</div>
+    <div class="nav-item" onclick="showSec('profile',this)"><i class="fas fa-user-circle"></i>My Profile</div>
+    <a class="nav-item" href="index.html"><i class="fas fa-arrow-left"></i>Back to Home</a>
+    <div class="sec-label">Help</div>
+    <a class="nav-item" href="contact.html"><i class="fas fa-headset"></i>Contact Support</a>
+    <div class="nav-item" onclick="doLogout()" style="color:#ef4444;"><i class="fas fa-sign-out-alt"></i>Logout</div>
+  </nav>
+  <div style="padding:14px 18px;border-top:1px solid rgba(255,255,255,.05);">
+    <div style="background:rgba(37,211,102,.07);border:1px solid rgba(37,211,102,.2);border-radius:12px;padding:12px 14px;">
+      <p style="font-size:11px;color:#25D366;font-weight:600;">💬 Need Help?</p>
+      <a href="https://wa.me/919928016573" style="font-size:12px;color:#25D366;font-weight:700;">+91 99280 16573</a>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button id="menuBtn" onclick="toggleSidebar()" style="display:none;background:none;border:none;color:#e8e8f0;font-size:18px;cursor:pointer;"><i class="fas fa-bars"></i></button>
+      <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;" id="pageTitle">Overview</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <a href="services.html" style="font-size:12px;background:rgba(201,168,76,.12);color:#c9a84c;border:1px solid rgba(201,168,76,.25);padding:7px 14px;border-radius:40px;font-weight:600;text-decoration:none;">
+        <i class="fas fa-plus" style="margin-right:4px;"></i>Book Course
+      </a>
+      <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:40px;padding:7px 13px 7px 7px;">
+        <div id="topAvatar" style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c97a);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#0a0a0f;">?</div>
+        <span id="topName" style="font-size:13px;font-weight:500;">Student</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- OVERVIEW -->
+    <div id="sec-overview" class="section active">
+      <div style="background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:22px;padding:26px 28px;margin-bottom:22px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:rgba(255,255,255,.07);border-radius:50%;"></div>
+        <p style="font-size:11px;color:#93c5fd;font-weight:600;letter-spacing:1px;margin-bottom:4px;">WELCOME BACK 👋</p>
+        <h2 id="welcomeName" style="font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;margin-bottom:5px;">Hello, Student!</h2>
+        <p style="color:#bfdbfe;font-size:13px;">Apne saare bookings, courses aur profile yahan dekho.</p>
+      </div>
+      <div class="stats-row">
+        <div class="scard gold"><i class="fas fa-receipt sicon"></i><div class="snum" id="st0" style="color:#c9a84c;">0</div><div class="slabel">Total Bookings</div></div>
+        <div class="scard green"><i class="fas fa-check-circle sicon"></i><div class="snum" id="st1" style="color:#22c55e;">0</div><div class="slabel">Confirmed</div></div>
+        <div class="scard blue"><i class="fas fa-clock sicon"></i><div class="snum" id="st2" style="color:#60a5fa;">0</div><div class="slabel">Pending</div></div>
+        <div class="scard red"><i class="fas fa-rupee-sign sicon"></i><div class="snum" id="st3" style="color:#f87171;font-size:1.4rem;">₹0</div><div class="slabel">Total Value</div></div>
+        <div class="scard purple"><i class="fas fa-graduation-cap sicon"></i><div class="snum" id="st4" style="color:#c084fc;">0</div><div class="slabel">Courses</div></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h3 style="font-size:15px;font-weight:700;">Recent Bookings</h3>
+        <span onclick="showSec('bookings',document.querySelectorAll('.nav-item')[1])" style="font-size:12px;color:#c9a84c;cursor:pointer;">View All →</span>
+      </div>
+      <div id="recentList"></div>
+    </div>
+
+    <!-- ALL BOOKINGS -->
+    <div id="sec-bookings" class="section">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+        <h2 style="font-size:1.15rem;font-weight:700;">All My Bookings</h2>
+        <input id="searchInp" oninput="renderBookings()" placeholder="🔍 Search..." style="padding:8px 13px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#e8e8f0;font-size:13px;outline:none;width:185px;">
+      </div>
+      <div class="tab-bar">
+        <button class="tbtn active" onclick="setFilter('all',this)">All</button>
+        <button class="tbtn" onclick="setFilter('Course',this)">📚 Courses</button>
+        <button class="tbtn" onclick="setFilter('Service',this)">💼 Services</button>
+        <button class="tbtn" onclick="setFilter('Contact',this)">📩 Enquiries</button>
+      </div>
+      <div id="allBookingsList"></div>
+    </div>
+
+    <!-- MY COURSES -->
+    <div id="sec-courses" class="section">
+      <h2 style="font-size:1.15rem;font-weight:700;margin-bottom:18px;">My Enrolled Courses</h2>
+      <div id="coursesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:18px;"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="sec-profile" class="section">
+      <h2 style="font-size:1.15rem;font-weight:700;margin-bottom:20px;">My Profile</h2>
+      <div id="profGrid" style="display:grid;grid-template-columns:1fr 2fr;gap:20px;">
+        <div style="background:#13131f;border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:24px;text-align:center;">
+          <div id="bigAvatar" style="width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c97a);display:flex;align-items:center;justify-content:center;font-size:1.7rem;font-weight:700;color:#0a0a0f;margin:0 auto 14px;">?</div>
+          <h3 id="profName" style="font-size:1rem;font-weight:700;">–</h3>
+          <p id="profEmail" style="font-size:12px;color:#8888aa;margin-top:4px;">–</p>
+          <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);">
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:7px;">
+              <span style="color:#8888aa;">Total Bookings</span><span id="profCount" style="color:#c9a84c;font-weight:600;">0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;">
+              <span style="color:#8888aa;">Member Since</span><span style="color:#e8e8f0;">2026</span>
+            </div>
+          </div>
+        </div>
+        <div style="background:#13131f;border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:24px;">
+          <h3 style="font-weight:700;margin-bottom:16px;">Edit Profile</h3>
+          <div style="display:grid;gap:12px;">
+            <div><label style="font-size:11px;color:#8888aa;display:block;margin-bottom:4px;">Full Name *</label><input id="pName" class="ifield" placeholder="Aapka naam"></div>
+            <div><label style="font-size:11px;color:#8888aa;display:block;margin-bottom:4px;">Email *</label><input id="pEmail" class="ifield" type="email" placeholder="Email address"></div>
+            <div><label style="font-size:11px;color:#8888aa;display:block;margin-bottom:4px;">Phone Number</label><input id="pPhone" class="ifield" placeholder="+91 XXXXX XXXXX"></div>
+            <div><label style="font-size:11px;color:#8888aa;display:block;margin-bottom:4px;">City</label><input id="pCity" class="ifield" placeholder="Aapka sheher"></div>
+            <button class="btn-save" onclick="saveProfile()"><i class="fas fa-save" style="margin-right:7px;"></i>Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div id="toast"><i class="fas fa-check-circle"></i><span id="toastTxt"></span></div>
+
+<script>
+let bFilter = 'all';
+
+/* ─── HELPERS ─── */
+function getUser(){ return JSON.parse(localStorage.getItem('currentUser')||'null'); }
+function getProfile(){ return JSON.parse(localStorage.getItem('userProfile')||'null'); }
+function getAllBookings(){ return JSON.parse(localStorage.getItem('bookings')||'[]'); }
+
+function getMyBookings(){
+  const cu = getUser();
+  const all = getAllBookings();
+  if(!cu) return all;
+  return all.filter(b =>
+    !b.email ||
+    b.email.toLowerCase().trim() === (cu.email||'').toLowerCase().trim()
+  );
+}
+
+function userName(){
+  const p=getProfile(), u=getUser();
+  return (p&&p.name)||(u&&u.name)||'Student';
+}
+function getInitials(name){
+  return (name||'S').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+}
+
+/* ─── INIT ─── */
+window.onload = function(){
+  const cu = getUser();
+  if(!cu){ window.location.href='index.html'; return; }
+  loadTopbar();
+  loadStats();
+  renderRecent();
+  renderBookings();
+  renderCourses();
+  loadProfileForm();
+  if(window.innerWidth<=768) document.getElementById('menuBtn').style.display='block';
+};
+window.onresize = () => {
+  document.getElementById('menuBtn').style.display = window.innerWidth<=768 ? 'block':'none';
+};
+
+/* ─── TOPBAR ─── */
+function loadTopbar(){
+  const n = userName();
+  document.getElementById('topAvatar').textContent = getInitials(n);
+  document.getElementById('topName').textContent = n.split(' ')[0];
+  document.getElementById('welcomeName').textContent = 'Hello, '+n.split(' ')[0]+'!';
+}
+
+/* ─── STATS ─── */
+function loadStats(){
+  const bks = getMyBookings();
+  const conf = bks.filter(b=>(b.status||'').toLowerCase()==='confirmed').length;
+  const pend = bks.filter(b=>(b.status||'pending').toLowerCase()==='pending').length;
+  const tot  = bks.reduce((s,b)=>s+(Number(b.price)||0), 0);
+  const crs  = bks.filter(b=>(b.type||'Course')==='Course').length;
+  document.getElementById('st0').textContent = bks.length;
+  document.getElementById('st1').textContent = conf;
+  document.getElementById('st2').textContent = pend;
+  document.getElementById('st3').textContent = '₹'+tot.toLocaleString('en-IN');
+  document.getElementById('st4').textContent = crs;
+  document.getElementById('profCount').textContent = bks.length;
+}
+
+/* ─── BOOKING CARD (full details) ─── */
+function makeBookingCard(b, globalIdx, showActions){
+  const st = (b.status||'pending').toLowerCase();
+  const stClass = st==='confirmed'?'bc': st==='paid'?'bc': st==='pending_payment'?'bo': st==='cancelled'?'bx': 'bp';
+  const stDot   = st==='confirmed'?'🟢': st==='paid'?'🟢': st==='pending_payment'?'🟠': st==='cancelled'?'🔴': '🟡';
+
+  const typeKey = (b.type||'Course').toLowerCase();
+  const typeClass = typeKey==='service'?'bt-service': typeKey==='contact'?'bt-contact': 'bt-course';
+
+  const price = Number(b.price)||0;
+
+  // Payment progress
+  let paidPct = st==='confirmed' ? 100 : st==='paid' ? 100 : st==='pending_payment' ? 50 : st==='cancelled' ? 0 : 0;
+  const barColor = paidPct===100
+    ? 'linear-gradient(90deg,#22c55e,#4ade80)'
+    : paidPct===50
+    ? 'linear-gradient(90deg,#f59e0b,#fbbf24)'
+    : 'linear-gradient(90deg,#c9a84c,#e8c97a)';
+  const payLabel = paidPct===100
+    ? '<span style="color:#22c55e;">✅ Confirmed / Paid</span>'
+    : st==='pending_payment'
+    ? '<span style="color:#f59e0b;">⏳ Payment Required — Complete payment to confirm</span>'
+    : st==='cancelled'
+    ? '<span style="color:#ef4444;">❌ Cancelled</span>'
+    : '<span style="color:#fbbf24;">⏳ Payment Pending — Admin confirm karega</span>';
+
+  // Emoji map
+  const emojiMap = {
+    'website development':'💻','mobile app development':'📱','digital marketing':'📊',
+    'software training':'🧠','custom software':'🔧','python programming':'🐍',
+    'java programming':'☕','full stack web development':'🌐','ui/ux design with figma':'🎨',
+    'aws cloud computing':'☁️','cyber security fundamentals':'🔒','data analytics with power bi':'📈',
+    'contact':'📩','default':'📚'
+  };
+  const serviceKey = (b.service||b.type||'default').toLowerCase();
+  const emoji = emojiMap[serviceKey] || emojiMap['default'];
+
+  const whatsappMsg = encodeURIComponent(`Hello! Mera booking #${String(globalIdx+1).padStart(3,'0')} hai - ${b.service||b.type}. Enquiry karna tha.`);
+
+  return `
+  <div class="bcard">
+    <div class="bcard-head">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;background:rgba(201,168,76,.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">${emoji}</div>
+        <div>
+          <div style="font-weight:700;font-size:14.5px;">${b.service || (b.message ? b.message.slice(0,45)+'...' : 'Enquiry')}</div>
+          <div style="font-size:11px;color:#555577;margin-top:2px;">Booking ID: #${String(globalIdx+1).padStart(4,'0')}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <span class="badge ${typeClass}">${b.type||'Course'}</span>
+        <span class="badge ${stClass}">${stDot} ${b.status||'Pending'}</span>
+      </div>
+    </div>
+
+    <div class="bcard-body">
+      <!-- Full Details Grid -->
+      <div class="dg">
+        <div class="di">
+          <label><i class="fas fa-user" style="margin-right:4px;color:#c9a84c;"></i>Student Name</label>
+          <span>${b.name || '–'}</span>
+        </div>
+        <div class="di">
+          <label><i class="fas fa-envelope" style="margin-right:4px;color:#c9a84c;"></i>Email Address</label>
+          <span style="font-size:13px;">${b.email || '–'}</span>
+        </div>
+        <div class="di">
+          <label><i class="fas fa-phone" style="margin-right:4px;color:#c9a84c;"></i>Phone Number</label>
+          <span>${b.phone || '–'}</span>
+        </div>
+        <div class="di">
+          <label><i class="fas fa-calendar-alt" style="margin-right:4px;color:#c9a84c;"></i>Batch / Date</label>
+          <span>${b.date || '–'}</span>
+        </div>
+        <div class="di">
+          <label><i class="fas fa-rupee-sign" style="margin-right:4px;color:#c9a84c;"></i>Course Fee</label>
+          <span style="color:#c9a84c;font-weight:700;font-size:15px;">${price ? '₹'+price.toLocaleString('en-IN') : '–'}</span>
+        </div>
+        <div class="di">
+          <label><i class="fas fa-tag" style="margin-right:4px;color:#c9a84c;"></i>Service Type</label>
+          <span>${b.type || 'Course'}</span>
+        </div>
+        ${b.description ? `
+        <div class="di" style="grid-column:1/-1;">
+          <label><i class="fas fa-comment-alt" style="margin-right:4px;color:#c9a84c;"></i>Your Message / Requirement</label>
+          <span style="color:#aaa;font-size:13px;">${b.description}</span>
+        </div>` : ''}
+      </div>
+
+      <!-- Payment Progress Bar -->
+      <div style="margin-top:18px;padding:16px;background:rgba(255,255,255,.03);border-radius:14px;border:1px solid rgba(255,255,255,.05);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span style="font-size:12px;color:#8888aa;font-weight:600;"><i class="fas fa-wallet" style="margin-right:5px;"></i>PAYMENT STATUS</span>
+          ${payLabel}
+        </div>
+        <div class="pbar-bg">
+          <div class="pbar-fill" style="width:${paidPct}%;background:${barColor};"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:5px;font-size:11px;color:#444466;">
+          <span>Booked</span>
+          <span style="font-weight:600;">${paidPct}% complete</span>
+          <span>Confirmed</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      ${showActions && st !== 'cancelled' ? `
+      <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;">
+        <a href="https://wa.me/919928016573?text=${whatsappMsg}" target="_blank"
+           style="font-size:12px;background:rgba(37,211,102,.1);color:#25D366;border:1px solid rgba(37,211,102,.2);padding:7px 15px;border-radius:9px;font-weight:600;text-decoration:none;">
+           <i class="fab fa-whatsapp" style="margin-right:4px;"></i>WhatsApp
+        </a>
+        <button onclick="cancelBooking(${globalIdx})"
+          style="font-size:12px;background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.2);padding:7px 15px;border-radius:9px;border:none;cursor:pointer;font-weight:600;">
+          <i class="fas fa-times" style="margin-right:4px;"></i>Cancel Booking
+        </button>
+      </div>` : ''}
+
+    </div>
+  </div>`;
+}
+
+/* ─── RECENT (overview last 3) ─── */
+function renderRecent(){
+  const bks = getMyBookings();
+  const el = document.getElementById('recentList');
+  if(!bks.length){
+    el.innerHTML = `<div class="empty-box"><div class="ei">📭</div><p>Abhi koi booking nahi hai.<br><a href="services.html">Courses dekho →</a></p></div>`;
+    return;
+  }
+  // show last 3 (most recent)
+  const allBks = getAllBookings();
+  const recent = bks.slice().reverse().slice(0,3);
+  el.innerHTML = recent.map(b => {
+    const gIdx = allBks.indexOf(b);
+    return makeBookingCard(b, gIdx, false);
+  }).join('');
+}
+
+/* ─── ALL BOOKINGS ─── */
+function renderBookings(){
+  let bks = getMyBookings();
+  const allBks = getAllBookings();
+  const q = (document.getElementById('searchInp')?.value||'').toLowerCase();
+
+  if(bFilter !== 'all') bks = bks.filter(b => (b.type||'Course') === bFilter);
+  if(q) bks = bks.filter(b =>
+    (b.service||'').toLowerCase().includes(q) ||
+    (b.name||'').toLowerCase().includes(q) ||
+    (b.email||'').toLowerCase().includes(q) ||
+    (b.status||'').toLowerCase().includes(q) ||
+    (b.date||'').toLowerCase().includes(q) ||
+    (b.phone||'').toLowerCase().includes(q)
+  );
+
+  bks = bks.slice().reverse(); // newest first
+
+  const el = document.getElementById('allBookingsList');
+  if(!bks.length){
+    el.innerHTML = `<div class="empty-box"><div class="ei">🔍</div><p>Koi booking nahi mili.</p></div>`;
+    return;
+  }
+  el.innerHTML = bks.map(b => {
+    const gIdx = allBks.indexOf(b);
+    return makeBookingCard(b, gIdx, true);
+  }).join('');
+}
+
+function setFilter(f, btn){
+  bFilter = f;
+  document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBookings();
+}
+
+function cancelBooking(globalIdx){
+  if(!confirm('Is booking ko cancel karna chahte ho?')) return;
+  const all = getAllBookings();
+  if(all[globalIdx]){
+    all[globalIdx].status = 'Cancelled';
+    localStorage.setItem('bookings', JSON.stringify(all));
+    loadStats();
+    renderRecent();
+    renderBookings();
+    renderCourses();
+    showToast('Booking cancel ho gayi.');
+  }
+}
+
+/* ─── MY COURSES GRID ─── */
+function renderCourses(){
+  const bks = getMyBookings().filter(b => (b.type||'Course') === 'Course');
+  const allBks = getAllBookings();
+  const el = document.getElementById('coursesGrid');
+  if(!bks.length){
+    el.innerHTML = `<div class="empty-box" style="grid-column:1/-1;"><div class="ei">🎓</div><p>Koi course enrolled nahi hai abhi.<br><a href="services.html">Courses Browse Karo →</a></p></div>`;
+    return;
+  }
+  const gradients = [
+    'linear-gradient(135deg,#1d4ed8,#6366f1)',
+    'linear-gradient(135deg,#16a34a,#059669)',
+    'linear-gradient(135deg,#d97706,#ea580c)',
+    'linear-gradient(135deg,#7c3aed,#9333ea)',
+    'linear-gradient(135deg,#db2777,#e11d48)',
+    'linear-gradient(135deg,#0891b2,#0e7490)'
+  ];
+  const emojis = {
+    'website development':'💻','mobile app development':'📱','digital marketing':'📊',
+    'software training':'🧠','custom software':'🔧','python programming':'🐍',
+    'java programming':'☕','full stack web development':'🌐'
+  };
+  el.innerHTML = bks.slice().reverse().map((b,i) => {
+    const gIdx = allBks.indexOf(b);
+    const gr = gradients[i % gradients.length];
+    const em = emojis[(b.service||'').toLowerCase()] || '📚';
+    const st = (b.status||'pending').toLowerCase();
+    const sc = st==='confirmed'?'bc': st==='paid'?'bc': st==='pending_payment'?'bo': st==='cancelled'?'bx': 'bp';
+    return `
+    <div style="background:#13131f;border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden;transition:all .25s;cursor:default;"
+         onmouseover="this.style.borderColor='rgba(201,168,76,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+      <div style="height:88px;background:${gr};display:flex;align-items:center;justify-content:center;font-size:2.8rem;">${em}</div>
+      <div style="padding:16px 18px;">
+        <div style="font-weight:700;font-size:14px;margin-bottom:8px;line-height:1.3;">${b.service||'Course'}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <span style="font-size:11.5px;color:#8888aa;">📅 ${b.date||'–'}</span>
+          <span class="badge ${sc}" style="font-size:10.5px;">${b.status||'Pending'}</span>
+        </div>
+        <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px 12px;margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:11.5px;color:#8888aa;">Course Fee</span>
+            <span style="font-size:15px;font-weight:700;color:#c9a84c;">${b.price?'₹'+Number(b.price).toLocaleString('en-IN'):'–'}</span>
+          </div>
+        </div>
+        <div style="font-size:11.5px;color:#8888aa;margin-bottom:3px;"><i class="fas fa-envelope" style="margin-right:5px;width:12px;"></i>${b.email||'–'}</div>
+        <div style="font-size:11.5px;color:#8888aa;"><i class="fas fa-phone" style="margin-right:5px;width:12px;"></i>${b.phone||'–'}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ─── PROFILE ─── */
+function loadProfileForm(){
+  const cu=getUser(), p=getProfile();
+  const name=(p&&p.name)||(cu&&cu.name)||'';
+  const email=(p&&p.email)||(cu&&cu.email)||'';
+  const phone=(p&&p.phone)||'';
+  const city=(p&&p.city)||'';
+  document.getElementById('pName').value=name;
+  document.getElementById('pEmail').value=email;
+  document.getElementById('pPhone').value=phone;
+  document.getElementById('pCity').value=city;
+  const ini=getInitials(name);
+  document.getElementById('bigAvatar').textContent=ini;
+  document.getElementById('profName').textContent=name||'–';
+  document.getElementById('profEmail').textContent=email||'–';
+}
+function saveProfile(){
+  const name=document.getElementById('pName').value.trim();
+  const email=document.getElementById('pEmail').value.trim();
+  const phone=document.getElementById('pPhone').value.trim();
+  const city=document.getElementById('pCity').value.trim();
+  if(!name||!email){showToast('Name aur email required hai!','error');return;}
+  localStorage.setItem('userProfile',JSON.stringify({name,email,phone,city}));
+  const cu=getUser();
+  if(cu){cu.name=name;cu.email=email;localStorage.setItem('currentUser',JSON.stringify(cu));}
+  loadTopbar();loadProfileForm();loadStats();
+  showToast('Profile save ho gayi! ✅');
+}
+
+/* ─── NAV ─── */
+function showSec(key, el){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+key).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el) el.classList.add('active');
+  const T={overview:'Overview',bookings:'My Bookings',courses:'My Courses',profile:'My Profile'};
+  document.getElementById('pageTitle').textContent=T[key]||key;
+  closeSidebar();
+  if(key==='bookings') renderBookings();
+  if(key==='courses') renderCourses();
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('show');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+}
+function doLogout(){
+  localStorage.removeItem('currentUser');
+  window.location.href='index.html';
+}
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  document.getElementById('toastTxt').textContent=msg;
+  t.style.background=type==='error'?'#ef4444':'#16a34a';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+// Responsive profile grid
+const rs=document.createElement('style');
+rs.textContent=`@media(max-width:640px){#profGrid{grid-template-columns:1fr!important;}}`;
+document.head.appendChild(rs);
+</script>
+</body>
+</html>

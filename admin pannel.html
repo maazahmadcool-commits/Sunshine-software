@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel - ClientBook | Sunshines Software</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #080810; color: #e8e8f0; min-height: 100vh; }
+
+    /* ── LOGIN SCREEN ── */
+    #loginScreen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #080810 0%, #0f1a35 100%);
+    }
+    .login-card { background: #13131f; border: 1px solid rgba(201,168,76,0.2); border-radius: 28px; padding: 40px; width: 100%; max-width: 420px; }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900;
+      background: linear-gradient(135deg, #c9a84c, #e8c97a); -webkit-background-clip: text;
+      background-clip: text; -webkit-text-fill-color: transparent; }
+    .input-field { width: 100%; padding: 13px 16px; background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #e8e8f0;
+      font-size: 14px; outline: none; transition: border-color 0.2s; font-family: 'DM Sans', sans-serif; }
+    .input-field:focus { border-color: #c9a84c; }
+    .btn-gold { width: 100%; background: linear-gradient(135deg, #c9a84c, #e8c97a); color: #0a0a0f;
+      padding: 14px; border-radius: 12px; font-weight: 700; font-size: 15px;
+      cursor: pointer; border: none; transition: opacity 0.2s; }
+    .btn-gold:hover { opacity: 0.9; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: fixed; left: 0; top: 0; bottom: 0; width: 260px;
+      background: linear-gradient(180deg, #0c0c1e 0%, #0a0f1f 100%);
+      border-right: 1px solid rgba(201,168,76,0.1);
+      display: flex; flex-direction: column; z-index: 100; transition: transform 0.3s;
+    }
+    .sidebar-logo { padding: 26px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 13px 24px;
+      font-size: 14px; font-weight: 500; color: #8888aa; cursor: pointer;
+      transition: all 0.2s; border-left: 3px solid transparent; }
+    .nav-item:hover { color: #e8e8f0; background: rgba(255,255,255,0.04); }
+    .nav-item.active { color: #c9a84c; background: rgba(201,168,76,0.08); border-left-color: #c9a84c; }
+    .nav-item i { width: 18px; text-align: center; }
+    .sidebar-section { padding: 16px 24px 8px; font-size: 10px; letter-spacing: 1.5px;
+      color: #333355; text-transform: uppercase; font-weight: 600; }
+
+    /* ── MAIN ── */
+    .main { margin-left: 260px; min-height: 100vh; }
+    .topbar { background: rgba(8,8,16,0.97); backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.05); padding: 15px 32px;
+      display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 50; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; }
+    .content { padding: 28px 32px; }
+
+    /* ── STAT CARDS ── */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 28px; }
+    .stat-card { background: #13131f; border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px; padding: 22px; position: relative; overflow: hidden; transition: transform 0.2s; }
+    .stat-card:hover { transform: translateY(-3px); }
+    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+    .stat-card.gold::before { background: linear-gradient(90deg, #c9a84c, #e8c97a); }
+    .stat-card.blue::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+    .stat-card.green::before { background: linear-gradient(90deg, #22c55e, #4ade80); }
+    .stat-card.purple::before { background: linear-gradient(90deg, #a855f7, #c084fc); }
+    .stat-card.orange::before { background: linear-gradient(90deg, #f97316, #fb923c); }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; }
+    .stat-label { font-size: 12px; color: #8888aa; font-weight: 500; margin-top: 4px; }
+    .stat-icon { position: absolute; right: 18px; top: 18px; font-size: 26px; opacity: 0.12; }
+
+    /* ── TABLE ── */
+    .table-wrap { background: #13131f; border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; overflow: hidden; margin-bottom: 24px; }
+    .table-head { padding: 18px 24px; display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.06); flex-wrap: wrap; gap: 10px; }
+    .table-head h3 { font-size: 15px; font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { padding: 12px 18px; text-align: left; font-size: 11px; letter-spacing: 1px;
+      text-transform: uppercase; color: #444466; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 600; }
+    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+    tbody tr:last-child { border-bottom: none; }
+    td { padding: 14px 18px; font-size: 13px; vertical-align: middle; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px;
+      border-radius: 40px; font-size: 11px; font-weight: 600; }
+    .badge-pending { background: rgba(251,191,36,0.12); color: #fbbf24; }
+    .badge-confirmed { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .badge-cancelled { background: rgba(239,68,68,0.12); color: #ef4444; }
+    .badge-course { background: rgba(59,130,246,0.12); color: #60a5fa; }
+    .badge-service { background: rgba(168,85,247,0.12); color: #c084fc; }
+    .badge-contact { background: rgba(251,146,60,0.12); color: #fb923c; }
+    select.status-sel { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      color: #e8e8f0; padding: 4px 8px; border-radius: 8px; font-size: 12px; cursor: pointer; outline: none; }
+
+    /* ── TABS ── */
+    .tab-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .tab-btn { padding: 7px 18px; border-radius: 40px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.08); color: #8888aa; background: transparent; }
+    .tab-btn.active { background: #c9a84c; color: #0a0a0f; border-color: #c9a84c; }
+    .tab-btn:hover:not(.active) { color: #e8e8f0; }
+
+    /* ── SEARCH / FILTER ── */
+    .search-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .search-input { padding: 9px 16px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; color: #e8e8f0; font-size: 13px; outline: none; width: 200px; }
+
+    /* ── TOAST ── */
+    #toast { position: fixed; bottom: 24px; right: 24px; padding: 14px 22px;
+      border-radius: 14px; color: white; font-size: 13px; font-weight: 600;
+      display: flex; align-items: center; gap: 10px; z-index: 9999;
+      transform: translateY(100px); opacity: 0; transition: all 0.3s; pointer-events: none; }
+    #toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── MODAL ── */
+    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; align-items: center; justify-content: center; }
+    .modal-bg.show { display: flex; }
+    .modal-box { background: #1a1a2e; border: 1px solid rgba(201,168,76,0.2); border-radius: 24px; padding: 32px; width: 100%; max-width: 480px; margin: 16px; }
+
+    /* ── SECTION ── */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* Sidebar overlay */
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99; }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; }
+      .content { padding: 16px; }
+      .topbar { padding: 14px 16px; }
+      .sidebar-overlay.show { display: block; }
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 10px; }
+
+    .empty-state { text-align: center; padding: 48px 20px; color: #555577; }
+    .empty-state .icon { font-size: 44px; margin-bottom: 14px; opacity: 0.4; }
+
+    /* Revenue chart bars */
+    .bar-wrap { display: flex; align-items: flex-end; gap: 8px; height: 120px; padding: 0 4px; }
+    .bar { border-radius: 6px 6px 0 0; min-width: 24px; flex: 1; transition: all 0.6s; cursor: default; position: relative; }
+    .bar:hover::after { content: attr(data-tip); position: absolute; top: -28px; left: 50%;
+      transform: translateX(-50%); background: #1a1a2e; border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 6px; padding: 2px 8px; font-size: 11px; color: #c9a84c; white-space: nowrap; }
+  </style>
+</head>
+<body>
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="width:52px;height:52px;background:#1d4ed8;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:18px;margin:0 auto 12px;">CB</div>
+      <span class="logo-text">ClientBook Admin</span>
+      <p style="font-size:12px;color:#555577;margin-top:4px;">Sunshines Software</p>
+    </div>
+    <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:12px;color:#c9a84c;">
+      🔐 Admin Access Only. Default: admin / admin123
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <input id="adminUser" class="input-field" placeholder="Username" type="text" value="admin" />
+      <input id="adminPass" class="input-field" placeholder="Password" type="password" value="admin123" />
+      <button class="btn-gold" onclick="adminLogin()"><i class="fas fa-lock" style="margin-right:8px;"></i>Login to Admin Panel</button>
+    </div>
+    <p style="text-align:center;font-size:12px;color:#333355;margin-top:20px;">
+      <a href="index.html" style="color:#c9a84c;">← Back to Website</a>
+    </p>
+  </div>
+</div>
+
+<!-- ══ ADMIN PANEL (hidden until login) ══ -->
+<div id="adminPanel" style="display:none;">
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:34px;height:34px;background:#ef4444;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:12px;">ADM</div>
+        <span class="logo-text">Admin Panel</span>
+      </div>
+      <p style="font-size:11px;color:#333355;margin-top:5px;">Sunshines Software</p>
+    </div>
+
+    <nav style="flex:1;overflow-y:auto;padding:10px 0;">
+      <div class="sidebar-section">Dashboard</div>
+      <div class="nav-item active" onclick="showSection('dashboard',this)"><i class="fas fa-tachometer-alt"></i> Dashboard</div>
+      <div class="nav-item" onclick="showSection('bookings',this)"><i class="fas fa-list-alt"></i> All Bookings</div>
+      <div class="nav-item" onclick="showSection('clients',this)"><i class="fas fa-users"></i> Clients / Students</div>
+      <div class="sidebar-section">Reports</div>
+      <div class="nav-item" onclick="showSection('revenue',this)"><i class="fas fa-chart-bar"></i> Revenue Report</div>
+      <div class="sidebar-section">Settings</div>
+      <div class="nav-item" onclick="clearAllData()"><i class="fas fa-trash"></i> Clear All Data</div>
+      <div class="nav-item" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Logout</div>
+    </nav>
+
+    <div style="padding:14px 20px;border-top:1px solid rgba(255,255,255,0.05);">
+      <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:12px;">
+        <p style="font-size:11px;color:#ef4444;font-weight:600;">🔴 Admin Session Active</p>
+        <p style="font-size:11px;color:#555577;margin-top:2px;">Logged in as Administrator</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <button onclick="toggleSidebar()" id="menuBtn" style="display:none;background:none;border:none;color:#e8e8f0;font-size:18px;cursor:pointer;"><i class="fas fa-bars"></i></button>
+        <div class="page-title" id="adminPageTitle">Dashboard</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button onclick="exportCSV()" style="font-size:12px;background:rgba(34,197,94,0.12);color:#22c55e;border:1px solid rgba(34,197,94,0.3);padding:7px 14px;border-radius:40px;font-weight:600;cursor:pointer;"><i class="fas fa-download" style="margin-right:6px;"></i>Export CSV</button>
+        <div style="display:flex;align-items:center;gap:8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:40px;padding:7px 14px;">
+          <i class="fas fa-user-shield" style="color:#ef4444;font-size:13px;"></i>
+          <span style="font-size:13px;color:#ef4444;font-weight:600;">Admin</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══ DASHBOARD ══ -->
+      <div id="sec-dashboard" class="section active">
+        <div class="stat-grid">
+          <div class="stat-card gold">
+            <i class="fas fa-receipt stat-icon"></i>
+            <div class="stat-num" id="aStatTotal" style="color:#c9a84c;">0</div>
+            <div class="stat-label">Total Bookings</div>
+          </div>
+          <div class="stat-card green">
+            <i class="fas fa-rupee-sign stat-icon"></i>
+            <div class="stat-num" id="aStatRevenue" style="color:#22c55e;font-size:1.6rem;">₹0</div>
+            <div class="stat-label">Total Revenue</div>
+          </div>
+          <div class="stat-card blue">
+            <i class="fas fa-users stat-icon"></i>
+            <div class="stat-num" id="aStatClients" style="color:#60a5fa;">0</div>
+            <div class="stat-label">Unique Clients</div>
+          </div>
+          <div class="stat-card purple">
+            <i class="fas fa-clock stat-icon"></i>
+            <div class="stat-num" id="aStatPending" style="color:#c084fc;">0</div>
+            <div class="stat-label">Pending</div>
+          </div>
+          <div class="stat-card orange">
+            <i class="fas fa-check-circle stat-icon"></i>
+            <div class="stat-num" id="aStatConfirmed" style="color:#fb923c;">0</div>
+            <div class="stat-label">Confirmed</div>
+          </div>
+        </div>
+
+        <!-- Recent Bookings -->
+        <div class="table-wrap">
+          <div class="table-head">
+            <h3>Recent Bookings (Latest 10)</h3>
+            <button onclick="showSection('bookings', document.querySelectorAll('.nav-item')[1])" style="font-size:12px;color:#c9a84c;background:none;border:none;cursor:pointer;">View All →</button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr>
+                <th>#</th><th>Name</th><th>Email</th><th>Course/Service</th><th>Type</th><th>Date</th><th>Price</th><th>Status</th><th>Action</th>
+              </tr></thead>
+              <tbody id="dashRecentBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ALL BOOKINGS ══ -->
+      <div id="sec-bookings" class="section">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+          <h2 style="font-size:1.2rem;font-weight:700;">All Bookings</h2>
+          <div class="search-row">
+            <input id="aSearchBox" class="search-input" placeholder="Search..." oninput="renderAdminBookings()" />
+          </div>
+        </div>
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="adminFilter('all',this)">All</button>
+          <button class="tab-btn" onclick="adminFilter('Course',this)">📚 Courses</button>
+          <button class="tab-btn" onclick="adminFilter('Service',this)">💼 Services</button>
+          <button class="tab-btn" onclick="adminFilter('Contact',this)">📩 Contact</button>
+          <button class="tab-btn" onclick="adminFilter('pending',this)">⏳ Pending</button>
+          <button class="tab-btn" onclick="adminFilter('confirmed',this)">✅ Confirmed</button>
+        </div>
+        <div class="table-wrap">
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr>
+                <th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Course/Service</th><th>Type</th><th>Date</th><th>Price</th><th>Status</th><th>Update</th><th>Del</th>
+              </tr></thead>
+              <tbody id="adminBookingsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ CLIENTS ══ -->
+      <div id="sec-clients" class="section">
+        <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:20px;">Clients & Students</h2>
+        <div class="table-wrap">
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr>
+                <th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Total Bookings</th><th>Total Spent</th><th>Last Booking</th>
+              </tr></thead>
+              <tbody id="clientsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ REVENUE ══ -->
+      <div id="sec-revenue" class="section">
+        <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:20px;">Revenue Report</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-bottom:28px;">
+          <div class="stat-card green">
+            <i class="fas fa-rupee-sign stat-icon"></i>
+            <div class="stat-num" id="revTotal" style="color:#22c55e;font-size:1.5rem;">₹0</div>
+            <div class="stat-label">Total Revenue</div>
+          </div>
+          <div class="stat-card blue">
+            <div class="stat-num" id="revCourse" style="color:#60a5fa;font-size:1.5rem;">₹0</div>
+            <div class="stat-label">From Courses</div>
+          </div>
+          <div class="stat-card purple">
+            <div class="stat-num" id="revService" style="color:#c084fc;font-size:1.5rem;">₹0</div>
+            <div class="stat-label">From Services</div>
+          </div>
+          <div class="stat-card gold">
+            <div class="stat-num" id="revAvg" style="color:#c9a84c;font-size:1.5rem;">₹0</div>
+            <div class="stat-label">Avg per Booking</div>
+          </div>
+        </div>
+
+        <!-- Top Courses Table -->
+        <div class="table-wrap">
+          <div class="table-head"><h3>Revenue by Course/Service</h3></div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>#</th><th>Course/Service</th><th>Bookings</th><th>Revenue</th><th>Share</th></tr></thead>
+              <tbody id="revenueBreakBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+
+</div><!-- /adminPanel -->
+
+<!-- Booking Detail Modal -->
+<div id="detailModal" class="modal-bg">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <h3 style="font-size:1.1rem;font-weight:700;">Booking Details</h3>
+      <button onclick="closeModal()" style="background:none;border:none;color:#8888aa;font-size:20px;cursor:pointer;">&times;</button>
+    </div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<script>
+  let adminLoggedIn = false;
+  let aFilter = 'all';
+
+  // ── LOGIN ──
+  function adminLogin() {
+    const u = document.getElementById('adminUser').value.trim();
+    const p = document.getElementById('adminPass').value.trim();
+    if (u === 'admin' && p === 'admin123') {
+      adminLoggedIn = true;
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      initAdmin();
+    } else {
+      showToast('Invalid credentials!', 'error');
+    }
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !adminLoggedIn) adminLogin();
+  });
+
+  function adminLogout() {
+    adminLoggedIn = false;
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('adminPass').value = '';
+  }
+
+  // ── INIT ──
+  function initAdmin() {
+    if (window.innerWidth <= 768) document.getElementById('menuBtn').style.display = 'block';
+    refreshDashboard();
+    renderAdminBookings();
+    renderClients();
+    renderRevenue();
+  }
+  window.onresize = () => {
+    document.getElementById('menuBtn').style.display = window.innerWidth <= 768 ? 'block' : 'none';
+  };
+
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('show');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('show');
+  }
+
+  // ── DATA ──
+  function getBookings() { return JSON.parse(localStorage.getItem('bookings') || '[]'); }
+  function saveBookings(b) { localStorage.setItem('bookings', JSON.stringify(b)); }
+
+  // ── DASHBOARD STATS ──
+  function refreshDashboard() {
+    const bookings = getBookings();
+    const revenue = bookings.reduce((s,b) => s + (Number(b.price)||0), 0);
+    const emails = [...new Set(bookings.map(b => b.email).filter(Boolean))];
+    const pending = bookings.filter(b => (b.status||'pending').toLowerCase() === 'pending').length;
+    const confirmed = bookings.filter(b => (b.status||'').toLowerCase() === 'confirmed').length;
+    document.getElementById('aStatTotal').textContent = bookings.length;
+    document.getElementById('aStatRevenue').textContent = '₹' + revenue.toLocaleString('en-IN');
+    document.getElementById('aStatClients').textContent = emails.length;
+    document.getElementById('aStatPending').textContent = pending;
+    document.getElementById('aStatConfirmed').textContent = confirmed;
+    renderDashRecent();
+  }
+
+  function renderDashRecent() {
+    const bookings = getBookings().slice().reverse().slice(0,10);
+    const tbody = document.getElementById('dashRecentBody');
+    if (!bookings.length) {
+      tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="icon">📭</div><p>No bookings yet</p></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = bookings.map((b,i) => buildRow(b, getBookings().length - 1 - i, i)).join('');
+  }
+
+  // ── ALL BOOKINGS ──
+  function renderAdminBookings() {
+    let bookings = getBookings().slice().reverse();
+    const search = (document.getElementById('aSearchBox')?.value || '').toLowerCase();
+    if (aFilter === 'pending') bookings = bookings.filter(b => (b.status||'pending').toLowerCase() === 'pending');
+    else if (aFilter === 'confirmed') bookings = bookings.filter(b => (b.status||'').toLowerCase() === 'confirmed');
+    else if (aFilter !== 'all') bookings = bookings.filter(b => (b.type||'Course') === aFilter);
+    if (search) bookings = bookings.filter(b =>
+      (b.name||'').toLowerCase().includes(search) ||
+      (b.email||'').toLowerCase().includes(search) ||
+      (b.service||'').toLowerCase().includes(search) ||
+      (b.phone||'').toLowerCase().includes(search)
+    );
+    const tbody = document.getElementById('adminBookingsBody');
+    if (!bookings.length) {
+      tbody.innerHTML = `<tr><td colspan="11"><div class="empty-state"><div class="icon">🔍</div><p>No bookings found</p></div></td></tr>`;
+      return;
+    }
+    const all = getBookings();
+    tbody.innerHTML = bookings.map((b, i) => {
+      const realIdx = all.indexOf(b);
+      return buildAdminRow(b, realIdx, i);
+    }).join('');
+  }
+
+  function buildRow(b, realIdx, dispIdx) {
+    return `
+      <tr>
+        <td style="color:#444466;font-size:12px;">${dispIdx+1}</td>
+        <td style="font-weight:500;">${b.name || '–'}</td>
+        <td style="color:#8888aa;font-size:12px;">${b.email || '–'}</td>
+        <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.service || b.message?.slice(0,30) || '–'}</td>
+        <td><span class="badge badge-${(b.type||'course').toLowerCase()}">${b.type||'Course'}</span></td>
+        <td style="color:#8888aa;font-size:12px;">${b.date || '–'}</td>
+        <td style="color:#c9a84c;font-weight:600;">${b.price ? '₹'+Number(b.price).toLocaleString('en-IN') : '–'}</td>
+        <td><span class="badge badge-${getStatusClass(b.status)}">${b.status || 'Pending'}</span></td>
+        <td>
+          <select class="status-sel" onchange="updateStatus(${realIdx}, this.value)">
+            <option ${(b.status||'Pending')==='Pending'?'selected':''}>Pending</option>
+            <option ${b.status==='Confirmed'?'selected':''}>Confirmed</option>
+            <option ${b.status==='Cancelled'?'selected':''}>Cancelled</option>
+          </select>
+        </td>
+      </tr>
+    `;
+  }
+
+  function buildAdminRow(b, realIdx, dispIdx) {
+    return `
+      <tr>
+        <td style="color:#444466;font-size:12px;">${dispIdx+1}</td>
+        <td style="font-weight:500;">${b.name || '–'}</td>
+        <td style="color:#8888aa;font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.email || '–'}</td>
+        <td style="color:#8888aa;font-size:12px;">${b.phone || '–'}</td>
+        <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b.service || b.message?.slice(0,30) || '–'}</td>
+        <td><span class="badge badge-${(b.type||'course').toLowerCase()}">${b.type||'Course'}</span></td>
+        <td style="color:#8888aa;font-size:12px;">${b.date || '–'}</td>
+        <td style="color:#c9a84c;font-weight:600;">${b.price ? '₹'+Number(b.price).toLocaleString('en-IN') : '–'}</td>
+        <td>
+          <select class="status-sel" onchange="updateStatus(${realIdx}, this.value)">
+            <option ${(b.status||'Pending')==='Pending'?'selected':''}>Pending</option>
+            <option ${b.status==='Confirmed'?'selected':''}>Confirmed</option>
+            <option ${b.status==='Cancelled'?'selected':''}>Cancelled</option>
+          </select>
+        </td>
+        <td>
+          <button onclick="deleteBooking(${realIdx})" style="background:rgba(239,68,68,0.1);color:#ef4444;border:none;padding:5px 10px;border-radius:8px;font-size:11px;cursor:pointer;">
+            <i class="fas fa-trash"></i>
+          </button>
+        </td>
+        <td>
+          <button onclick="viewDetail(${realIdx})" style="background:rgba(201,168,76,0.1);color:#c9a84c;border:none;padding:5px 10px;border-radius:8px;font-size:11px;cursor:pointer;">
+            <i class="fas fa-eye"></i>
+          </button>
+        </td>
+      </tr>
+    `;
+  }
+
+  function adminFilter(type, btn) {
+    aFilter = type;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderAdminBookings();
+  }
+
+  function updateStatus(idx, status) {
+    const bookings = getBookings();
+    if (bookings[idx]) {
+      bookings[idx].status = status;
+      saveBookings(bookings);
+      refreshDashboard();
+      renderAdminBookings();
+      renderClients();
+      showToast('Status updated to ' + status);
+    }
+  }
+
+  function deleteBooking(idx) {
+    if (!confirm('Delete this booking permanently?')) return;
+    const bookings = getBookings();
+    bookings.splice(idx, 1);
+    saveBookings(bookings);
+    refreshDashboard();
+    renderAdminBookings();
+    renderClients();
+    renderRevenue();
+    showToast('Booking deleted.');
+  }
+
+  function viewDetail(idx) {
+    const b = getBookings()[idx];
+    if (!b) return;
+    document.getElementById('modalContent').innerHTML = `
+      <div style="display:grid;gap:12px;font-size:13px;">
+        ${detailRow('Name', b.name)}
+        ${detailRow('Email', b.email)}
+        ${detailRow('Phone', b.phone || '–')}
+        ${detailRow('Course/Service', b.service || b.message || '–')}
+        ${detailRow('Type', b.type || 'Course')}
+        ${detailRow('Batch / Date', b.date || '–')}
+        ${detailRow('Price', b.price ? '₹'+Number(b.price).toLocaleString('en-IN') : '–')}
+        ${detailRow('Status', b.status || 'Pending')}
+        ${b.description ? detailRow('Message', b.description) : ''}
+      </div>
+    `;
+    document.getElementById('detailModal').classList.add('show');
+  }
+  function detailRow(label, val) {
+    return `<div style="display:flex;gap:12px;"><span style="color:#555577;min-width:120px;">${label}</span><span style="color:#e8e8f0;font-weight:500;">${val}</span></div>`;
+  }
+  function closeModal() { document.getElementById('detailModal').classList.remove('show'); }
+
+  // ── CLIENTS ──
+  function renderClients() {
+    const bookings = getBookings();
+    const map = {};
+    bookings.forEach(b => {
+      const key = b.email || b.name || '(Unknown)';
+      if (!map[key]) map[key] = {name: b.name||'–', email: b.email||'–', phone: b.phone||'–', count:0, total:0, last:'–'};
+      map[key].count++;
+      map[key].total += Number(b.price)||0;
+      map[key].last = b.date || map[key].last;
+      if (b.phone) map[key].phone = b.phone;
+    });
+    const clients = Object.values(map);
+    const tbody = document.getElementById('clientsBody');
+    if (!clients.length) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="icon">👥</div><p>No clients yet</p></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = clients.map((c,i) => `
+      <tr>
+        <td style="color:#444466;font-size:12px;">${i+1}</td>
+        <td style="font-weight:600;">${c.name}</td>
+        <td style="color:#8888aa;font-size:12px;">${c.email}</td>
+        <td style="color:#8888aa;font-size:12px;">${c.phone}</td>
+        <td style="text-align:center;"><span style="background:rgba(59,130,246,0.12);color:#60a5fa;padding:3px 10px;border-radius:40px;font-size:12px;font-weight:600;">${c.count}</span></td>
+        <td style="color:#22c55e;font-weight:600;">₹${c.total.toLocaleString('en-IN')}</td>
+        <td style="color:#8888aa;font-size:12px;">${c.last}</td>
+      </tr>
+    `).join('');
+  }
+
+  // ── REVENUE ──
+  function renderRevenue() {
+    const bookings = getBookings();
+    const total = bookings.reduce((s,b) => s+(Number(b.price)||0), 0);
+    const fromCourse = bookings.filter(b => b.type === 'Course').reduce((s,b) => s+(Number(b.price)||0), 0);
+    const fromService = bookings.filter(b => b.type === 'Service').reduce((s,b) => s+(Number(b.price)||0), 0);
+    const avg = bookings.length ? Math.round(total / bookings.length) : 0;
+    document.getElementById('revTotal').textContent = '₹'+total.toLocaleString('en-IN');
+    document.getElementById('revCourse').textContent = '₹'+fromCourse.toLocaleString('en-IN');
+    document.getElementById('revService').textContent = '₹'+fromService.toLocaleString('en-IN');
+    document.getElementById('revAvg').textContent = '₹'+avg.toLocaleString('en-IN');
+
+    // Breakdown by service
+    const breakdown = {};
+    bookings.forEach(b => {
+      const key = b.service || 'Other';
+      if (!breakdown[key]) breakdown[key] = {count:0, rev:0};
+      breakdown[key].count++;
+      breakdown[key].rev += Number(b.price)||0;
+    });
+    const rows = Object.entries(breakdown).sort((a,b) => b[1].rev - a[1].rev);
+    const tbody = document.getElementById('revenueBreakBody');
+    if (!rows.length) { tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="icon">📊</div><p>No data</p></div></td></tr>`; return; }
+    tbody.innerHTML = rows.map(([name, d], i) => `
+      <tr>
+        <td style="color:#444466;font-size:12px;">${i+1}</td>
+        <td style="font-weight:600;">${name}</td>
+        <td style="text-align:center;"><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:3px 10px;border-radius:40px;font-size:12px;">${d.count}</span></td>
+        <td style="color:#22c55e;font-weight:700;">₹${d.rev.toLocaleString('en-IN')}</td>
+        <td>
+          <div style="background:rgba(255,255,255,0.05);border-radius:40px;height:8px;width:100%;overflow:hidden;">
+            <div style="background:linear-gradient(90deg,#c9a84c,#e8c97a);height:100%;border-radius:40px;width:${total ? Math.round(d.rev/total*100) : 0}%;"></div>
+          </div>
+          <span style="font-size:11px;color:#8888aa;">${total ? Math.round(d.rev/total*100) : 0}%</span>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // ── EXPORT CSV ──
+  function exportCSV() {
+    const bookings = getBookings();
+    if (!bookings.length) { showToast('No data to export!', 'error'); return; }
+    const headers = ['Name','Email','Phone','Course/Service','Type','Date','Price','Status'];
+    const rows = bookings.map(b => [
+      b.name||'', b.email||'', b.phone||'',
+      b.service || b.message?.slice(0,40) || '',
+      b.type||'Course', b.date||'',
+      b.price||'', b.status||'Pending'
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    a.download = 'clientbook_bookings_' + new Date().toISOString().slice(0,10) + '.csv';
+    a.click();
+    showToast('CSV exported successfully!');
+  }
+
+  // ── CLEAR DATA ──
+  function clearAllData() {
+    if (!confirm('⚠️ This will DELETE all booking data permanently. Are you sure?')) return;
+    if (!confirm('Second confirm: Really delete everything?')) return;
+    localStorage.removeItem('bookings');
+    refreshDashboard();
+    renderAdminBookings();
+    renderClients();
+    renderRevenue();
+    showToast('All data cleared.');
+  }
+
+  // ── SECTION NAV ──
+  function showSection(key, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('sec-' + key).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if (el) el.classList.add('active');
+    const titles = {dashboard:'Dashboard', bookings:'All Bookings', clients:'Clients & Students', revenue:'Revenue Report'};
+    document.getElementById('adminPageTitle').textContent = titles[key] || key;
+    closeSidebar();
+    if (key === 'bookings') renderAdminBookings();
+    if (key === 'clients') renderClients();
+    if (key === 'revenue') renderRevenue();
+  }
+
+  // ── HELPERS ──
+  function getStatusClass(status) {
+    const s = (status||'pending').toLowerCase();
+    if (s === 'confirmed') return 'confirmed';
+    if (s === 'cancelled') return 'cancelled';
+    return 'pending';
+  }
+
+  function showToast(msg, type='success') {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.style.background = type === 'error' ? '#ef4444' : '#16a34a';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us - ClientBook | Sunshines Software</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .hero-bg { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+    #toast { position:fixed; bottom:24px; right:24px; padding:14px 22px; border-radius:14px; color:white; font-size:13px; font-weight:600; display:flex; align-items:center; gap:10px; z-index:9999; transform:translateY(100px); opacity:0; transition:all .3s; pointer-events:none; }
+    #toast.show { transform:translateY(0); opacity:1; }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+<div id="toast"><i class="fas fa-check-circle"></i><span id="toastTxt"></span></div>
+
+<!-- NAVBAR -->
+<nav class="bg-white shadow-md fixed w-full z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-2xl">CB</div>
+      <span class="text-2xl font-bold text-blue-700">ClientBook</span>
+    </div>
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+      <a href="index.html" class="hover:text-blue-600">Home</a>
+      <a href="about.html" class="hover:text-blue-600">About</a>
+      <a href="services.html" class="hover:text-blue-600">Services</a>
+      <a href="contact.html" class="text-blue-600 font-semibold">Contact</a>
+      <a href="client-dashboard.html" class="hover:text-blue-600">Dashboard</a>
+    </div>
+    <div id="authNav" class="flex items-center gap-4">
+      <a href="index.html" class="px-6 py-2.5 text-sm font-semibold text-blue-600 border border-blue-600 rounded-full hover:bg-blue-50">Login</a>
+      <a href="index.html" class="px-6 py-2.5 text-sm font-semibold bg-blue-600 text-white rounded-full hover:bg-blue-700">Register</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-bg pt-24 pb-16 text-white">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+    <h1 class="text-5xl md:text-6xl font-bold">Get In Touch</h1>
+    <p class="mt-6 text-xl max-w-2xl mx-auto">Have questions? Want to book a service? We're just one message away!</p>
+  </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 gap-16">
+      <!-- LEFT -->
+      <div>
+        <h2 class="text-4xl font-bold mb-8">Contact Information</h2>
+        <div class="space-y-8">
+          <div class="flex gap-5">
+            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl"><i class="fas fa-map-marker-alt"></i></div>
+            <div><h4 class="font-semibold text-lg">Our Office</h4><p class="text-gray-600">Mahesh Nagar, Jaipur, Rajasthan</p><p class="text-gray-600">India - 302015</p></div>
+          </div>
+          <div class="flex gap-5">
+            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-xl"><i class="fas fa-phone-alt"></i></div>
+            <div><h4 class="font-semibold text-lg">Phone / WhatsApp</h4><p class="text-gray-600">+91 99280 16573</p></div>
+          </div>
+          <div class="flex gap-5">
+            <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-xl"><i class="fas fa-envelope"></i></div>
+            <div><h4 class="font-semibold text-lg">Email</h4><p class="text-gray-600">contact@sunshines.in</p></div>
+          </div>
+          <a href="https://wa.me/919928016573" target="_blank" class="flex items-center gap-3 bg-green-500 text-white px-6 py-4 rounded-2xl font-semibold hover:bg-green-600 transition w-fit">
+            <i class="fab fa-whatsapp text-xl"></i> Chat on WhatsApp
+          </a>
+        </div>
+        <div class="mt-12">
+          <h4 class="font-semibold text-lg mb-4">Find Us Here</h4>
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3557.5!2d75.787!3d26.912!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sMahesh+Nagar+Jaipur!5e0!3m2!1sen!2sin!4v1700000000000"
+            width="100%" height="280" style="border:0;border-radius:16px;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+      </div>
+      <!-- RIGHT: FORM -->
+      <div class="bg-gray-50 p-10 rounded-3xl shadow-xl">
+        <h2 class="text-3xl font-bold mb-8 text-center">Send Us a Message</h2>
+        <form id="contactForm" class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium mb-2">Inquiry Type *</label>
+            <select id="inquiryType" required class="w-full p-4 border border-gray-300 rounded-2xl focus:border-blue-500 focus:outline-none bg-white">
+              <option value="">Select Inquiry Type</option>
+              <option value="Course Inquiry">Course Inquiry</option>
+              <option value="Service Inquiry">Service Inquiry</option>
+              <option value="General Query">General Query</option>
+              <option value="Complaint / Feedback">Complaint / Feedback</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <input type="text" id="cName" placeholder="Full Name *" required class="w-full px-5 py-4 border border-gray-300 rounded-2xl focus:border-blue-500 focus:outline-none">
+            <input type="email" id="cEmail" placeholder="Email Address *" required class="w-full px-5 py-4 border border-gray-300 rounded-2xl focus:border-blue-500 focus:outline-none">
+          </div>
+          <input type="tel" id="cPhone" placeholder="Phone Number (Optional)" class="w-full px-5 py-4 border border-gray-300 rounded-2xl focus:border-blue-500 focus:outline-none">
+          <div>
+            <label class="block text-sm font-medium mb-2">Message / Requirements *</label>
+            <textarea id="cMsg" rows="6" required class="w-full px-5 py-4 border border-gray-300 rounded-2xl focus:border-blue-500 focus:outline-none" placeholder="I would like to book Website Development services..."></textarea>
+          </div>
+          <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-5 rounded-2xl text-lg transition">
+            <i class="fas fa-paper-plane mr-2"></i>Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="bg-gray-900 text-white py-12 text-center">
+  <p class="text-sm">© 2026 Sunshines Software • Internship Project by Zakir Ahmad</p>
+</footer>
+
+<script>
+window.onload = function(){
+  const cu = JSON.parse(localStorage.getItem('currentUser')||'null');
+  if(cu){
+    document.getElementById('cName').value = cu.name||'';
+    document.getElementById('cEmail').value = cu.email||'';
+    document.getElementById('authNav').innerHTML = `
+      <a href="client-dashboard.html" class="px-6 py-2.5 text-sm font-semibold bg-blue-600 text-white rounded-full">Dashboard</a>`;
+  }
+};
+
+document.getElementById('contactForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const name = document.getElementById('cName').value.trim();
+  const email = document.getElementById('cEmail').value.trim();
+  const phone = document.getElementById('cPhone').value.trim();
+  const msg = document.getElementById('cMsg').value.trim();
+  const inquiry = document.getElementById('inquiryType').value;
+  if(!name||!email||!msg){ showToast('Saari required fields bharo!','#ef4444'); return; }
+
+  const bookings = JSON.parse(localStorage.getItem('bookings')||'[]');
+  bookings.push({
+    type:'Contact', service:'Contact / Enquiry',
+    name, email, phone:phone||'—',
+    description:`[${inquiry}] ${msg}`,
+    date: new Date().toLocaleDateString('en-IN'),
+    price:0, status:'pending',
+    createdAt:new Date().toISOString()
+  });
+  localStorage.setItem('bookings',JSON.stringify(bookings));
+  showToast(`Thank you, ${name}! Message mil gaya. Jaldi contact karenge. ✅`);
+  this.reset();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled=true; btn.textContent='Sent ✅';
+  setTimeout(()=>{ btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane mr-2"></i>Send Message'; },3000);
+});
+
+function showToast(msg, color='#22c55e'){
+  const t=document.getElementById('toast');
+  document.getElementById('toastTxt').textContent=msg;
+  t.style.background=color;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4000);
+}
+</script>
+</body>
+</html>
